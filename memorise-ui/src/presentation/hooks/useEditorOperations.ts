@@ -7,7 +7,7 @@ import { useConflictResolution } from "./useConflictResolution";
 import { annotationWorkflowService } from "../../application/services/AnnotationWorkflowService";
 import { segmentWorkflowService } from "../../application/services/SegmentWorkflowService";
 import { editorWorkflowService } from "../../application/services/EditorWorkflowService";
-import { taggingWorkflowService } from "../../application/services/TaggingWorkflowSercice";
+import { taggingWorkflowService } from "../../application/services/TaggingWorkflowService";
 import { translationWorkflowService } from "../../application/services/TranslationWorkflowService";
 import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
 import { SpanLogic } from "../../core/domain/entities/SpanLogic";

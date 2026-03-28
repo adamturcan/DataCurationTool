@@ -4,6 +4,7 @@ import { EditorView } from "@codemirror/view";
 import { Transaction } from "@codemirror/state";
 
 import type { NerSpan, SelectionBox, SpanCoordMap } from "../../../../types";
+import { getSpanId } from "../utils/editorUtils";
 
 import { editorTheme } from "./theme/theme";
 import { spansFacet, spanDecorationField } from "./features/spans/spanDecorations";
@@ -20,8 +21,6 @@ interface Props {
   placeholder?: string;
   onDropTextPosition?: (localOffset: number, dataTransfer: DataTransfer) => void;
 }
-
-const getSpanId = (s: NerSpan) => s.id ?? `span-${s.start}-${s.end}-${s.entity}`;
 
 export const CodeMirrorWrapper: React.FC<Props> = ({
   value, spans, onChange, onSpanClick, onSelectionChange, placeholder, onDropTextPosition
@@ -48,7 +47,6 @@ export const CodeMirrorWrapper: React.FC<Props> = ({
             event.preventDefault();
 
             const pos = view.posAtCoords({ x: event.clientX, y: event.clientY }, false);
-            console.log("[CMWrapper Drop] Client coords: ", event.clientX, event.clientY, "-> Extracted View Pos:", pos);
 
             if (pos !== null) {
               onDropTextPosition(pos, event.dataTransfer);

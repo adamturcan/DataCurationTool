@@ -4,7 +4,7 @@ import RightPanel, { type TagRow } from "../rightPanel/RightPanel";
 import type { ThesaurusItem } from "../rightPanel/inputs/TagThesaurusInput";
 import { useSessionStore, useNotificationStore } from "../../stores";
 import { useThesaurusDisplay, useThesaurusWorker } from "../../hooks";
-import { taggingWorkflowService } from "../../../application/services/TaggingWorkflowSercice.ts";
+import { taggingWorkflowService } from "../../../application/services/TaggingWorkflowService";
 
 const PanelContainer: React.FC = () => {
   const { id: routeId } = useParams();

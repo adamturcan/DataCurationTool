@@ -109,7 +109,7 @@ export const SegmentLogic = {
     const secondRelativePos = isSpace ? relativePos + 1 : relativePos;
 
     const secondSegment: Segment = {
-      id: `seg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      id: crypto.randomUUID(),
       start: newStartPos,
       end: toSplit.end,
       order: toSplit.order + 1,

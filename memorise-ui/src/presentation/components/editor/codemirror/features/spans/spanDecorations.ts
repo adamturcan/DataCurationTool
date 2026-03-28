@@ -1,8 +1,7 @@
 import { Decoration, type DecorationSet, EditorView } from "@codemirror/view";
 import { type Range, StateField, Facet } from "@codemirror/state";
 import type { NerSpan } from "../../../../../../types";
-
-export const getSpanId = (s: NerSpan) => s.id ?? `span-${s.start}-${s.end}-${s.entity}`;
+import { getSpanId } from "../../../utils/editorUtils";
 
 export const spansFacet = Facet.define<NerSpan[], NerSpan[]>({
   combine: (values) => values[values.length - 1] || [],

@@ -133,7 +133,7 @@ export class BrowserApiService implements ApiServiceContract {
 
         const segmentEnd = segmentStart + segmentText.length;
         segments.push({
-          id: `seg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          id: crypto.randomUUID(),
           start: segmentStart,
           end: segmentEnd,
           order: data.results[i].label,

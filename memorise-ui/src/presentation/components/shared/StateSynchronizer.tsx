@@ -22,7 +22,6 @@ export const StateSynchronizer: React.FC<StateSynchronizerProps> = ({ username, 
   // Hydrate workspace metadata when username changes
   useEffect(() => {
     if (!username) {
-      console.log('[StateSynchronizer] No username, skipping workspace metadata load');
       return;
     }
 
@@ -32,8 +31,6 @@ export const StateSynchronizer: React.FC<StateSynchronizerProps> = ({ username, 
       const { enqueue: enqueueNotification } = useNotificationStore.getState();
       
       try {
-        console.log(`[StateSynchronizer] Loading workspace metadata for user: ${username}`);
-        
         // Use the App Service directly
         const service = getWorkspaceApplicationService();
         const loaded = await service.loadForOwner(username);
@@ -76,10 +73,7 @@ export const StateSynchronizer: React.FC<StateSynchronizerProps> = ({ username, 
   
   // Hydrate the active session when the workspaceId changes
   useEffect(() => {
-    console.log("synchronizer workspaceId", workspaceId);
-    
     if (!workspaceId) {
-      console.log('[StateSynchronizer] No workspaceId in route, skipping session hydration');      
       return;
     }
 
@@ -91,8 +85,6 @@ export const StateSynchronizer: React.FC<StateSynchronizerProps> = ({ username, 
       setLoading();
 
       try {
-        console.log(`[StateSynchronizer] Loading active workspace: ${workspaceId}`);
-        
         // Use the App Service directly
         const service = getWorkspaceApplicationService();
         const workspace = await service.getWorkspaceById(workspaceId);
@@ -106,7 +98,6 @@ export const StateSynchronizer: React.FC<StateSynchronizerProps> = ({ username, 
         // Track active ID in Metadata Store
         setCurrentWorkspace(workspaceId);
 
-        console.log(`[StateSynchronizer] Successfully hydrated session for workspace: ${workspace.name}`);
       } catch (error) {
         console.error('[StateSynchronizer] Failed to load workspace session:', error);
         enqueueNotification({

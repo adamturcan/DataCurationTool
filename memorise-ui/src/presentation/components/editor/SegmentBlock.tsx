@@ -351,7 +351,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
       </Box>
 
       <Box sx={{
-        padding: "0pxg 20px 20px 20px",
+        padding: "0 20px 20px 20px",
         "& .cm-editor": { outline: "none", backgroundColor: "transparent !important" },
         "& .cm-scroller": { backgroundColor: "transparent !important" },
         "& .cm-activeLine": { backgroundColor: "transparent !important" },
