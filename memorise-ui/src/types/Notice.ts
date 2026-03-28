@@ -9,3 +9,8 @@ export interface Notice extends NoticeOptions {
   message: string;
 }
 
+export type WorkflowResult = {
+  ok: boolean;
+  notice: Notice;
+};
+

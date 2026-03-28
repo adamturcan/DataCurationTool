@@ -29,7 +29,7 @@ import CodeIcon from "@mui/icons-material/Code";
 import type { TransitionProps } from "@mui/material/transitions";
 import type { WorkspaceMetadata } from "../../core/entities/Workspace";
 import { PdfExportService } from "../../infrastructure/services/PdfExportService";
-import { useWorkspaceStore } from "../stores/workspaceStore";
+import { useWorkspaceStore } from "../stores";
 import { getWorkspaceApplicationService } from "../../infrastructure/providers/workspaceProvider";
 
 const COLORS = {

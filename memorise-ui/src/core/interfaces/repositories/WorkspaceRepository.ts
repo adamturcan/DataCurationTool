@@ -1,5 +1,5 @@
 import { Workspace } from '../../entities/Workspace';
-import type { Segment } from '../../../types/Segment';
+import type { Segment } from '../../../types';
 
 /**
  * Repository interface for Workspace persistence

@@ -1,15 +1,10 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
 import { resolveApiSpanConflicts, type ConflictPrompt } from "../../core/services/annotation/resolveApiSpanConflicts";
-import type { NerSpan } from "../../types/NotationEditor";
+import type { NerSpan, AnnotationLayer, Segment, WorkflowResult } from "../../types";
 import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
 import { v4 as uuidv4 } from "uuid";
-import type { AnnotationLayer } from "../../types/AnnotationTypes";
-import type { Segment } from "../../types/Segment";
-import type { Notice } from "../../types/Notice";
 
-export type AnnotationResult = {
-  ok: boolean;
-  notice: Notice;
+export type AnnotationResult = WorkflowResult & {
   layerPatch?: { userSpans?: NerSpan[]; apiSpans?: NerSpan[] };
   deletedApiKeys?: string[];
 };

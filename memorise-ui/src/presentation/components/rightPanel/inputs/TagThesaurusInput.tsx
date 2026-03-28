@@ -102,7 +102,7 @@ const TagThesaurusInput: React.FC<Props> = ({
           paper: { sx: { mt: 1, borderRadius: "12px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", border: "1px solid #e2e8f0" } }
         }}
         renderOption={(props, option) => {
-          const { key, ...restProps } = props as any;
+          const { key, ...restProps } = props as React.HTMLAttributes<HTMLLIElement> & { key: string };
           return <ThesaurusOption key={`${option.keywordId || 'noid'}::${option.name}`} liProps={restProps} option={option} />;
         }}
         renderInput={(params) => (

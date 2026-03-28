@@ -1,5 +1,5 @@
 // src/shared/utils/pdfHelpers.ts
-import type { NerSpan } from "../../types/NotationEditor";
+import type { NerSpan } from "../../types";
 import { ENTITY_COLORS } from "../constants/notationEditor";
 
 /**

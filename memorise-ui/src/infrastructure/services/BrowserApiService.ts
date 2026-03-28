@@ -1,14 +1,8 @@
-import type { NerSpan } from '../../types/NotationEditor';
-import type {
-  LanguageCode,
-  TranslationRequest,
-  TranslationResponse,
-} from '../../types/Translation';
+import type { NerSpan, LanguageCode, TranslationRequest, TranslationResponse, Segment } from '../../types';
 import type {
   ApiService as ApiServiceContract,
 } from '../../core/interfaces/services/ApiService';
 import { errorHandlingService } from './ErrorHandlingService';
-import type { Segment } from '../../types/Segment';
 
 const NER_ENDPOINT = "https://ner-api.dev.memorise.sdu.dk/recognize";
 const SEGMENT_ENDPOINT = "https://textseg-api.dev.memorise.sdu.dk/segment";

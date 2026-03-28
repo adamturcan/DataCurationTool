@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { Notice } from '../../types/Notice';
+import type { Notice } from '../../types';
 
 /**
  * Notification Store

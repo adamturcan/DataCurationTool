@@ -2,10 +2,9 @@ import React, { useCallback, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import RightPanel, { type TagRow } from "../rightPanel/RightPanel";
 import type { ThesaurusItem } from "../rightPanel/inputs/TagThesaurusInput";
-import { useSessionStore } from "../../stores/sessionStore";
+import { useSessionStore, useNotificationStore } from "../../stores";
 import { useThesaurusDisplay, useThesaurusWorker } from "../../hooks";
 import { taggingWorkflowService } from "../../../application/services/TaggingWorkflowSercice.ts";
-import { useNotificationStore } from "../../stores/notificationStore.ts";
 
 const PanelContainer: React.FC = () => {
   const { id: routeId } = useParams();
@@ -65,7 +64,7 @@ const PanelContainer: React.FC = () => {
         segmentId: (activeSegmentId && activeSegmentId !== "root") ? activeSegmentId : undefined
       }, tags);
 
-      if (result.success) {
+      if (result.ok) {
         useSessionStore.getState().updateSession({ tags: result.tags ?? [] });
       }
       notify(result.notice);
@@ -79,7 +78,7 @@ const PanelContainer: React.FC = () => {
   const deleteTag = useCallback(
     (name: string, keywordId?: number, parentId?: number) => {
       const result = taggingWorkflowService.deleteTag(name, keywordId, parentId, tags, activeSegmentId);
-      if (result.success) {
+      if (result.ok) {
         useSessionStore.getState().updateSession({ tags: result.tags ?? [] });
       }
       notify(result.notice);

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { useSessionStore } from "../stores/sessionStore";
+import { useSessionStore } from "../stores";
 import type { AnnotationResult } from "../../application/services/AnnotationWorkflowService";
-import type { AnnotationLayer } from "../../types/AnnotationTypes";
+import type { AnnotationLayer } from "../../types";
 
 export function useLayerOperations() {
   const sessionStore = useSessionStore();

@@ -1,9 +1,7 @@
 import type { WorkspaceRepository } from '../../interfaces/repositories/WorkspaceRepository';
 import { Workspace, WorkspaceTranslation } from '../../entities/Workspace';
 import { Tag } from '../../entities/Tag';
-import type { TagItem } from '../../../types/Tag';
-import type { Translation } from '../../../types/Workspace';
-import type { NerSpan } from '../../../types/NotationEditor';
+import type { TagItem, Translation, NerSpan } from '../../../types';
 import { errorHandlingService } from '../../../infrastructure/services/ErrorHandlingService';
 import { requireOwnerId, requireWorkspaceName } from '../shared/validators';
 

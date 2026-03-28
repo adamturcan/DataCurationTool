@@ -11,6 +11,8 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import TranslateIcon from "@mui/icons-material/Translate";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
+import type { LanguageOption } from "../../../hooks";
+
 interface EditorGlobalMenuProps {
   onNer: () => void;
   onSegment: () => void;
@@ -23,7 +25,7 @@ interface EditorGlobalMenuProps {
   hasSegments?: boolean;
   isAlreadySegmented?: boolean;
   hasActiveSegment?: boolean;
-  languageOptions: any[];
+  languageOptions: LanguageOption[];
   isLanguageListLoading: boolean;
 }
 
@@ -152,13 +154,13 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
                       <Autocomplete
                         fullWidth size="small" disableClearable forcePopupIcon={false}
                         options={languageOptions || []}
-                        getOptionLabel={(option: any) => option.label}
+                        getOptionLabel={(option: LanguageOption) => option.label}
                         loading={isLanguageListLoading}
-                        onChange={(_event, newValue: any) => {
+                        onChange={(_event, newValue: LanguageOption) => {
                           if (newValue) { onTranslateAll(newValue.code); setShowTranslate(false); }
                         }}
                         slotProps={{ paper: { sx: { mt: 1, borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", border: "1px solid #e2e8f0" } } }}
-                        renderOption={(props, option: any) => (
+                        renderOption={(props, option: LanguageOption) => (
                           <li {...props} key={option.code}>
                             <Box sx={{ display: "flex", flexDirection: "column", py: 0.5 }}>
                               <span style={{ textTransform: "uppercase", fontWeight: 700, color: '#1e293b' }}>{option.code}</span>

@@ -3,23 +3,14 @@ import { Box, Menu, MenuItem, Typography } from "@mui/material";
 
 import CallSplitIcon from "@mui/icons-material/CallSplit";
 
-import { useSessionStore } from "../../stores/sessionStore";
-import { useNotificationStore } from "../../stores/notificationStore";
-import { useLanguageOptions } from "../../hooks/useLanguageOptions";
-import ConflictResolutionDialog from "../editor/dialogs/ConflictResolutionDialog";
-import ActionGuardDialog from "../editor/dialogs/ActionGuardDialog";
-
-import EditorGlobalMenu from "../editor/menus/EditorGlobalMenu.tsx";
-import CategoryMenu from "../editor/menus/CategoryMenu.tsx";
+import { useSessionStore, useNotificationStore } from "../../stores";
+import { useLanguageOptions, useLayerOperations, useEditorOperations, useSpanInteractions, useSegmentSplitMerge } from "../../hooks";
+import { ConflictResolutionDialog, ActionGuardDialog } from "../editor/dialogs";
+import { EditorGlobalMenu, CategoryMenu } from "../editor/menus";
 import { SegmentBlock } from "../editor/SegmentBlock";
 import type { SegmentHandlers, SegmentTranslationHandlers } from "../editor/SegmentBlock";
 import { SegmentDragProvider } from "../editor/context/SegmentDragContext";
-
 import { COLORS } from "../editor/utils/editorUtils";
-import { useLayerOperations } from "../../hooks/useLayerOperations";
-import { useEditorOperations } from "../../hooks/useEditorOperations";
-import { useSpanInteractions } from "../../hooks/useSpanInteractions";
-import { useSegmentSplitMerge } from "../../hooks/useSegmentSplitMerge";
 
 const EditorContainer: React.FC = () => {
   const notify = useNotificationStore.getState().enqueue;
@@ -66,7 +57,7 @@ const EditorContainer: React.FC = () => {
           {!session?.segments || session.segments.length === 0 ? (
             <SegmentDragProvider onDraggingChange={splits.setDraggingFromIndex} draggingFromIndex={splits.draggingFromIndex}>
               <SegmentBlock
-                segment={{ id: "root", start: 0, end: draftText.length, text: draftText }}
+                segment={{ id: "root", start: 0, end: draftText.length, text: draftText, order: 0 }}
                 index={0}
                 session={session}
                 display={{ isActive: activeSegmentId === "root", isDragging: false, dropDisabled: false }}

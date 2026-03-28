@@ -1,10 +1,6 @@
 import type { WorkspaceRepository } from '../../core/interfaces/repositories/WorkspaceRepository';
 import { workspaceToDto } from '../../core/entities/mappers';
-import type { Workspace as WorkspaceDTO } from '../../types/Workspace';
-import type { TagItem } from '../../types/Tag';
-import type { Translation } from '../../types/Workspace';
-import type { NerSpan } from '../../types/NotationEditor';
-import type { Segment } from '../../types/Segment';
+import type { Workspace as WorkspaceDTO, TagItem, Translation, NerSpan, Segment } from '../../types';
 import { CreateWorkspaceUseCase } from '../../core/usecases/workspace/CreateWorkspaceUseCase';
 import { DeleteWorkspaceUseCase } from '../../core/usecases/workspace/DeleteWorkspaceUseCase';
 import {

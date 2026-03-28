@@ -2,13 +2,9 @@ import { getApiService } from "../../infrastructure/providers/apiProvider";
 import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
 import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
 import { SpanLogic } from "../../core/domain/entities/SpanLogic";
-import type { Translation } from "../../types/Workspace";
-import type { Notice } from "../../types/Notice";
-import type { Segment } from "../../types/Segment";
+import type { Translation, Segment, WorkflowResult } from "../../types";
 
-export type TranslationResult = {
-  ok: boolean;
-  notice: Notice;
+export type TranslationResult = WorkflowResult & {
   translationsPatch?: Translation[];
   newActiveTab?: string;
   editorKey?: string;

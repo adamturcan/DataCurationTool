@@ -1,21 +1,15 @@
 import { SpanLogic } from "../../core/domain/entities/SpanLogic";
 import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
-import type { NerSpan } from "../../types/NotationEditor";
-import type { AnnotationLayer } from "../../types/AnnotationTypes";
-import type { Segment } from "../../types/Segment";
-import type { Workspace } from "../../types/Workspace";
-import type { Notice } from "../../types/Notice";
+import type { NerSpan, AnnotationLayer, Segment, Workspace, SpanCoordMap, WorkflowResult } from "../../types";
 import { getWorkspaceApplicationService } from "../../infrastructure/providers/workspaceProvider";
 
 export type TextChangeResult = {
   draftText: string;
-  layerPatch: Record<string, any>;
+  layerPatch: Partial<AnnotationLayer> & { segments?: Segment[]; segmentTranslations?: Record<string, string>; editedSegmentTranslations?: Record<string, boolean> };
   lang: string;
 }
 
-export type SaveResult = {
-  ok: boolean;
-  notice: Notice;
+export type SaveResult = WorkflowResult & {
   sessionPatch?: { text: string; isDirty: false };
   workspaceMetadataPatch?: { updatedAt: number };
 }
@@ -28,7 +22,7 @@ export class EditorWorkflowService {
     lang: string,
     session: { fullText: string; segments: Segment[] },
     layer: AnnotationLayer,
-    liveCoords?: Map<string, { start: number; end: number }>,
+    liveCoords?: SpanCoordMap,
     deadSpanIds?: string[]
   ): TextChangeResult | undefined {
 
@@ -58,7 +52,7 @@ export class EditorWorkflowService {
     lang: string,
     activeSegId: string,
     segments: Segment[],
-    liveCoords?: Map<string, { start: number; end: number }>,
+    liveCoords?: SpanCoordMap,
     deadSpanIds?: string[]
   ) {
     const deadSet = new Set(deadSpanIds || []);

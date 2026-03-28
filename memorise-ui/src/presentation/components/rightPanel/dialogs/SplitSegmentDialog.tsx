@@ -12,7 +12,7 @@ import {
   ListItem,
   ListItemButton,
 } from "@mui/material";
-import type { Segment } from "../../../../types/Segment";
+import type { Segment } from "../../../../types";
 
 interface SplitOption {
   position: number; 

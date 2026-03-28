@@ -1,7 +1,5 @@
 import { useCallback, useState } from "react";
-import { useSessionStore } from "../stores/sessionStore";
-import { useNotificationStore } from "../stores/notificationStore";
-import { useWorkspaceStore } from "../stores/workspaceStore";
+import { useSessionStore, useNotificationStore, useWorkspaceStore } from "../stores";
 import { presentError } from "../../application/errors/errorPresenter";
 import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
 import { useConflictResolution } from "./useConflictResolution";
@@ -14,7 +12,7 @@ import { translationWorkflowService } from "../../application/services/Translati
 import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
 import { SpanLogic } from "../../core/domain/entities/SpanLogic";
 
-import type { AnnotationLayer } from "../../types/AnnotationTypes";
+import type { AnnotationLayer, SpanCoordMap } from "../../types";
 import type { useLayerOperations } from "./useLayerOperations";
 
 type LayerOps = ReturnType<typeof useLayerOperations>;
@@ -152,7 +150,7 @@ export function useEditorOperations(layers: LayerOps) {
     notify({ message: `Running Sem-Tag on segment (${lang})...`, tone: "info" });
     setActiveSegmentId(segmentId);
     const result = await taggingWorkflowService.runClassify(false, { activeSegmentId: segmentId, segments: session?.segments || [], draftText, translations: session?.translations || [], text: session?.text || "", activeTab: lang, tags: session?.tags || [] });
-    if (result.success && result.tags) {
+    if (result.ok && result.tags) {
       sessionStore.updateSession({ tags: result.tags });
     }
     notify(result.notice);
@@ -160,7 +158,7 @@ export function useEditorOperations(layers: LayerOps) {
 
   // --- Text change ---
 
-  const handleTextChange = useCallback((segmentId: string, text: string, liveCoords: any, deadIds?: string[], localLang?: string) => {
+  const handleTextChange = useCallback((segmentId: string, text: string, liveCoords: SpanCoordMap | undefined, deadIds?: string[], localLang?: string) => {
     const lang = localLang || "original";
     const layer = resolveLayer(lang);
     if (!layer) return;
@@ -226,7 +224,7 @@ export function useEditorOperations(layers: LayerOps) {
       if (segments.length === 0) {
         // No segments — classify the whole document as original text
         const result = await taggingWorkflowService.runClassify(true, { activeSegmentId: undefined, segments: [], draftText, translations: session?.translations || [], text: session?.text || "", activeTab: "original", tags: session?.tags || [] });
-        if (result.success && result.tags) {
+        if (result.ok && result.tags) {
           sessionStore.updateSession({ tags: result.tags });
         }
         notify(result.notice);
@@ -245,7 +243,7 @@ export function useEditorOperations(layers: LayerOps) {
             activeTab: "original",
             tags: currentTags,
           });
-          if (result.success && result.tags) {
+          if (result.ok && result.tags) {
             currentTags = result.tags;
             successCount++;
           }

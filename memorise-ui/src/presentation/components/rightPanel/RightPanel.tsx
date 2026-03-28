@@ -3,7 +3,7 @@ import { Box, Fade } from "@mui/material";
 
 import TagTable, { type TagRow } from "./tags/TagTable";
 import type { ThesaurusItem } from "./inputs/TagThesaurusInput";
-import type { ThesaurusIndexItem } from "../../../types/Thesaurus";
+import type { ThesaurusIndexItem } from "../../../types";
 
 export type { TagRow };
 

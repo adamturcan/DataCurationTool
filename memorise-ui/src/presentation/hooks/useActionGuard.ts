@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
-import type { ActionGuardDialogProps, ResolutionStep } from "../components/editor/dialogs/ActionGuardDialog";
-import type { Translation } from "../../types/Workspace";
-import type { Segment } from "../../types/Segment";
+import type { ActionGuardDialogProps, ResolutionStep } from "../components/editor/dialogs";
+import type { Translation, Segment } from "../../types";
 
 // Gap detection helpers
 

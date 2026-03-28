@@ -1,4 +1,4 @@
-import type { TagItem, TagSource } from '../../types/Tag';
+import type { TagItem, TagSource } from '../../types';
 
 export interface TagProps {
   name: string;

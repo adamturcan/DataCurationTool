@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { useSessionStore } from "../stores/sessionStore";
-import { useNotificationStore } from "../stores/notificationStore";
+import { useSessionStore, useNotificationStore } from "../stores";
 import { useActionGuard } from "./useActionGuard";
 import type { ActionGuardActions } from "./useActionGuard";
 import { segmentWorkflowService } from "../../application/services/SegmentWorkflowService";

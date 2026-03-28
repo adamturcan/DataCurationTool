@@ -1,5 +1,5 @@
 import type { WorkspaceRepository } from '../../interfaces/repositories/WorkspaceRepository';
-import type { Translation } from '../../../types/Workspace';
+import type { Translation } from '../../../types';
 import { WorkspaceTranslation } from '../../entities/Workspace';
 import { errorHandlingService } from '../../../infrastructure/services/ErrorHandlingService';
 import { requireWorkspaceId, requireTranslationLanguage } from '../shared/validators';

@@ -14,7 +14,7 @@
  */
 
 import Fuse from 'fuse.js';
-import type { ThesaurusIndexItem } from '../types/Thesaurus';
+import type { ThesaurusIndexItem } from '../types';
 
 let fuse: Fuse<ThesaurusIndexItem> | null = null;
 let isReady = false;

@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import EditorContainer from "../components/containers/EditorContainer";
 import { COLORS } from "../../shared/constants/ui";
-import { useSessionStore } from "../stores/sessionStore";
+import { useSessionStore } from "../stores";
 import PanelContainer from "../components/containers/PanelContainer";
 
 const WorkspacePage: React.FC = () => {

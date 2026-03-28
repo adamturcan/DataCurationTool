@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSessionStore } from '../../stores/sessionStore';
-import { useWorkspaceStore } from '../../stores/workspaceStore';
-import { useNotificationStore } from '../../stores/notificationStore';
+import { useSessionStore, useWorkspaceStore, useNotificationStore } from '../../stores';
 import { getWorkspaceApplicationService } from '../../../infrastructure/providers/workspaceProvider';
 
 interface StateSynchronizerProps {

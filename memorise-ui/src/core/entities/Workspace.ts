@@ -1,6 +1,4 @@
-import type { NerSpan } from '../../types/NotationEditor';
-import type { TagItem } from '../../types/Tag';
-import type { Translation as TranslationDTO } from '../../types/Workspace';
+import type { NerSpan, TagItem, Translation as TranslationDTO } from '../../types';
 import { Tag, type TagProps } from './Tag';
 
 /**

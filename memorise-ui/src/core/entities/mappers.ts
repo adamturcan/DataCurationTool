@@ -1,4 +1,4 @@
-import type { Translation as TranslationDTO, Workspace as WorkspaceDTO } from '../../types/Workspace';
+import type { Translation as TranslationDTO, Workspace as WorkspaceDTO } from '../../types';
 import { Tag } from './Tag';
 import { Workspace, WorkspaceTranslation } from './Workspace';
 

@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { alpha } from "@mui/material/styles";
 
 import TagThesaurusInput, { type ThesaurusItem } from "../inputs/TagThesaurusInput";
-import type { ThesaurusIndexItem } from "../../../../types/Thesaurus";
+import type { ThesaurusIndexItem } from "../../../../types";
 import { buildTagHierarchy } from "../../../../shared/utils/thesaurusHelpers";
 import TagItem, { type TagRow } from "./TagItem";
 import HierarchyGroup from "./HierarchyGroup";

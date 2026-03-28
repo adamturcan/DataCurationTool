@@ -1,4 +1,4 @@
-import type { NerSpan } from "../types/NotationEditor";
+import type { NerSpan } from "./NotationEditor";
 import type { TagItem } from "./Tag";
 import type { Segment } from "./Segment";
 

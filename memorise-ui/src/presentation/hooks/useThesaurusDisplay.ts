@@ -10,7 +10,7 @@
 
 import { useState, useEffect } from 'react';
 import { loadThesaurusIndex } from '../../shared/utils/thesaurusHelpers';
-import type { ThesaurusIndexItem } from '../../types/Thesaurus';
+import type { ThesaurusIndexItem } from '../../types';
 import type { useThesaurusWorker } from './useThesaurusWorker';
 
 export function useThesaurusDisplay(

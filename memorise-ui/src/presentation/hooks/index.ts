@@ -1,3 +1,12 @@
 export { useThesaurusDisplay } from './useThesaurusDisplay';
 export { useThesaurusWorker } from './useThesaurusWorker';
 export { useActionGuard } from './useActionGuard';
+export type { TranslationGap, ActionGuardActions, UseActionGuardReturn } from './useActionGuard';
+export { useLanguageOptions } from './useLanguageOptions';
+export type { LanguageOption } from './useLanguageOptions';
+export { useLayerOperations } from './useLayerOperations';
+export { useEditorOperations } from './useEditorOperations';
+export { useSpanInteractions } from './useSpanInteractions';
+export type { SplitAnchor } from './useSpanInteractions';
+export { useSegmentSplitMerge } from './useSegmentSplitMerge';
+export { useConflictResolution } from './useConflictResolution';

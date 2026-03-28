@@ -18,10 +18,9 @@ import {
 } from "react-router-dom";
 // Custom components, stores, services, and utilities
 import BubbleSidebar from "./presentation/components/sidebar/BubbleSidebar";
-import { useWorkspaceStore } from "./presentation/stores/workspaceStore";
-import { useNotificationStore } from "./presentation/stores/notificationStore";
+import { useWorkspaceStore, useNotificationStore } from "./presentation/stores";
 import { getWorkspaceApplicationService } from "./infrastructure/providers/workspaceProvider";
-import type { Workspace } from "./types/Workspace";
+import type { Workspace } from "./types";
 import { NotificationSnackbar } from "./presentation/components/shared/NotificationSnackbar";
 import { StateSynchronizer } from "./presentation/components/shared/StateSynchronizer";
 

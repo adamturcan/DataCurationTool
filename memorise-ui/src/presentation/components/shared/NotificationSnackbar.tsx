@@ -10,7 +10,7 @@
 
 import React from "react";
 import { Snackbar, Alert } from "@mui/material";
-import type { NoticeOptions, NoticeTone } from "../../../types/Notice";
+import type { NoticeOptions, NoticeTone } from "../../../types";
 
 // Constants for snackbar configuration
 const ANCHOR_ORIGIN = { vertical: "bottom" as const, horizontal: "center" as const };

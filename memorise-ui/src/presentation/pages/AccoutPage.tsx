@@ -13,7 +13,7 @@ import {
 import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import type { Workspace } from "../../types/Workspace";
+import type { Workspace } from "../../types";
 
 interface Props {
   username: string;

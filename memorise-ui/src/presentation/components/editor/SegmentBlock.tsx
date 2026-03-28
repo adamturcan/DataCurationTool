@@ -19,9 +19,10 @@ import SyncIcon from '@mui/icons-material/Sync';
 
 import { CodeMirrorWrapper } from "./codemirror/CodeMirrorWrapper";
 import { SegmentLogic } from "../../../core/domain/entities/SegmentLogic";
-import type { NerSpan } from "../../../types/NotationEditor";
+import type { NerSpan, SelectionBox, SpanCoordMap, Segment, Workspace, Translation } from "../../../types";
 import { COLORS, getSpanId } from "./utils/editorUtils";
 import { useSegmentDrag } from "./context/SegmentDragContext";
+import type { LanguageOption } from "../../hooks";
 
 // Prop groups
 
@@ -36,9 +37,9 @@ export interface SegmentHandlers {
   onJoinUp: (segmentId: string) => void;
   onRunNer: (segmentId: string, lang: string) => void;
   onRunSemTag: (segmentId: string, lang: string) => void;
-  onSpanClick: (span: NerSpan, el: HTMLElement, fn: any, lang: string, start: number) => void;
-  onSelectionChange: (sel: any, segmentId: string, lang: string, start: number) => void;
-  onTextChange: (segmentId: string, text: string, coords: any, deadIds?: string[], lang?: string) => void;
+  onSpanClick: (span: NerSpan, el: HTMLElement, fn: (newText: string) => void, lang: string, start: number) => void;
+  onSelectionChange: (sel: SelectionBox | null, segmentId: string, lang: string, start: number) => void;
+  onTextChange: (segmentId: string, text: string, coords: SpanCoordMap | undefined, deadIds?: string[], lang?: string) => void;
   onShiftBoundary?: (sourceSegmentId: string, globalTargetPos: number) => void;
   onInvalidDrop?: () => void;
 }
@@ -47,7 +48,7 @@ export interface SegmentTranslationHandlers {
   onAddTranslation: (segmentId: string, lang: string) => void;
   onDeleteTranslation: (lang: string, segmentId: string) => void;
   onUpdateTranslation: (segmentId: string, lang: string) => void;
-  languageOptions: any[];
+  languageOptions: LanguageOption[];
   isLanguageListLoading: boolean;
 }
 
@@ -58,9 +59,9 @@ export interface SegmentDragHandlers {
 // Component props
 
 export interface SegmentBlockProps {
-  segment: any;
+  segment: Segment;
   index: number;
-  session: any;
+  session: Workspace | null;
   display: SegmentDisplayProps;
   handlers: SegmentHandlers;
   translationHandlers: SegmentTranslationHandlers;
@@ -91,11 +92,11 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
     return () => registerNode(index, null);
   }, [index, registerNode]);
 
-  const availableLangs = useMemo(() => (session?.translations || []).filter((t: any) => t.segmentTranslations?.[segment.id] !== undefined).map((t: any) => t.language), [session?.translations, segment.id]);
+  const availableLangs = useMemo(() => (session?.translations || []).filter((t: Translation) => t.segmentTranslations?.[segment.id] !== undefined).map((t: Translation) => t.language), [session?.translations, segment.id]);
 
   const isSegmentEdited = useMemo(() => {
     if (localLang === "original") return !!segment.isEdited;
-    const tLayer = session?.translations?.find((t: any) => t.language === localLang);
+    const tLayer = session?.translations?.find((t: Translation) => t.language === localLang);
     return !!tLayer?.editedSegmentTranslations?.[segment.id];
   }, [localLang, segment.isEdited, segment.id, session?.translations]);
 
@@ -109,8 +110,8 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
 
   const virtualSegment = useMemo(() => {
     if (localLang === "original") return segment;
-    const tLayer = session?.translations?.find((t: any) => t.language === localLang);
-    return SegmentLogic.calculateVirtualBoundaries(session?.segments || [], tLayer?.segmentTranslations || {}).find((b: any) => b.id === segment.id) || segment;
+    const tLayer = session?.translations?.find((t: Translation) => t.language === localLang);
+    return SegmentLogic.calculateVirtualBoundaries(session?.segments || [], tLayer?.segmentTranslations || {}).find((b: Segment) => b.id === segment.id) || segment;
   }, [localLang, segment, session]);
 
   const localSpans = useMemo(() => {
@@ -122,7 +123,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
       const api = (session?.apiSpans || []).filter((s: NerSpan) => !bannedKeys.has(`${s.start}:${s.end}:${s.entity}`));
       rawSpans = [...api, ...(session?.userSpans || [])];
     } else {
-      const tLayer = session?.translations?.find((t: any) => t.language === localLang);
+      const tLayer = session?.translations?.find((t: Translation) => t.language === localLang);
       const api = (tLayer?.apiSpans || []).filter((s: NerSpan) => !bannedKeys.has(`${s.start}:${s.end}:${s.entity}`));
       rawSpans = [...api, ...(tLayer?.userSpans || [])];
     }
@@ -140,20 +141,20 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
   const filteredLanguageOptions = useMemo(() => {
     const query = languageSearch.trim().toLowerCase();
     if (!query) return languageOptions;
-    return languageOptions.filter(({ code, label }: any) => code.toLowerCase().includes(query) || label.toLowerCase().includes(query));
+    return languageOptions.filter(({ code, label }: LanguageOption) => code.toLowerCase().includes(query) || label.toLowerCase().includes(query));
   }, [languageOptions, languageSearch]);
 
   const handleDelete = () => { onDeleteTranslation(localLang, segment.id); setLocalLang("original"); setDeleteDialogOpen(false); };
 
-  const handleCmChange = useCallback((newText: string, liveCoords: any, deadIds?: string[]) => {
+  const handleCmChange = useCallback((newText: string, liveCoords?: Map<string, { start: number; end: number }>, deadIds?: string[]) => {
     onTextChange(segment.id, newText, liveCoords, deadIds, localLang);
   }, [onTextChange, segment.id, localLang]);
 
-  const handleCmSpanClick = useCallback((span: any, el: any, fn: any) => {
+  const handleCmSpanClick = useCallback((span: NerSpan, el: HTMLElement, fn: (newText: string) => void) => {
     onSpanClick(span, el, fn, localLang, virtualSegment.start);
   }, [onSpanClick, localLang, virtualSegment.start]);
 
-  const handleCmSelectionChange = useCallback((sel: any) => {
+  const handleCmSelectionChange = useCallback((sel: SelectionBox | null) => {
     onSelectionChange(sel, segment.id, localLang, virtualSegment.start);
   }, [onSelectionChange, segment.id, localLang, virtualSegment.start]);
 
@@ -375,10 +376,10 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
         />
       </Box>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={(e: any) => { e.stopPropagation(); setAnchorEl(null); }} PaperProps={{ sx: { maxHeight: 280, minWidth: 260 } }}>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} PaperProps={{ sx: { maxHeight: 280, minWidth: 260 } }}>
         <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #eee' }}><TextField fullWidth size="small" placeholder="Search language..." value={languageSearch} autoFocus onChange={(e) => setLanguageSearch(e.target.value)} variant="standard" InputProps={{ disableUnderline: true }} /></Box>
         <Box sx={{ px: 1, pb: 1, maxHeight: 220, overflowY: "auto" }}>
-          {isLanguageListLoading ? <MenuItem disabled><CircularProgress size={16} sx={{ mr: 1 }} /> Loading…</MenuItem> : filteredLanguageOptions.length > 0 ? filteredLanguageOptions.map(({ code, label }: any) => <MenuItem key={code} onClick={(e) => { e.stopPropagation(); onAddTranslation(segment.id, code); setLocalLang(code); setAnchorEl(null); }}><Box sx={{ display: "flex", flexDirection: "column" }}><span style={{ textTransform: "uppercase", fontWeight: 600 }}>{code}</span><span style={{ fontSize: "0.8rem", opacity: 0.8 }}>{label}</span></Box></MenuItem>) : <MenuItem disabled>No matches</MenuItem>}
+          {isLanguageListLoading ? <MenuItem disabled><CircularProgress size={16} sx={{ mr: 1 }} /> Loading…</MenuItem> : filteredLanguageOptions.length > 0 ? filteredLanguageOptions.map(({ code, label }: LanguageOption) => <MenuItem key={code} onClick={(e) => { e.stopPropagation(); onAddTranslation(segment.id, code); setLocalLang(code); setAnchorEl(null); }}><Box sx={{ display: "flex", flexDirection: "column" }}><span style={{ textTransform: "uppercase", fontWeight: 600 }}>{code}</span><span style={{ fontSize: "0.8rem", opacity: 0.8 }}>{label}</span></Box></MenuItem>) : <MenuItem disabled>No matches</MenuItem>}
         </Box>
       </Menu>
 

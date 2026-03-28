@@ -1,16 +1,10 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
 import { loadThesaurusIndex } from "../../shared/utils/thesaurusHelpers";
-import type { TagItem } from "../../types/Tag";
-import type { Notice } from "../../types/Notice";
-import type { Segment } from "../../types/Segment";
-import type { Translation } from "../../types/Workspace";
+import type { ThesaurusIndexItem, TagItem, Segment, Translation, WorkflowResult } from "../../types";
 
 
-export type ClassificationResult = {
-  success: boolean;
-  notice: Notice;
+export type ClassificationResult = WorkflowResult & {
   tags?: TagItem[];
-
 }
 
 
@@ -52,13 +46,13 @@ export class TaggingWorkflowService {
     }
 
     if (!textToProcess.trim()) {
-      return { success: false, notice: { message: "No text to classify.", tone: "error" } };
+      return { ok: false, notice: { message: "No text to classify.", tone: "error" } };
     }
 
     try {
       const apiResults = await this.apiService.classify(textToProcess);
 
-      let thesaurusIndex: any[] = [];
+      let thesaurusIndex: ThesaurusIndexItem[] = [];
       try { thesaurusIndex = await loadThesaurusIndex(); }
       catch (e) { console.warn("Could not load thesaurus index", e); }
 
@@ -94,17 +88,17 @@ export class TaggingWorkflowService {
         return true;
       });
 
-      return { success: true, notice: { message: "Classification completed.", tone: "success" }, tags: [...filteredTags, ...newTags] };
+      return { ok: true, notice: { message: "Classification completed.", tone: "success" }, tags: [...filteredTags, ...newTags] };
 
     } catch (error) {
 
-      return { success: false, notice: { message: "Failed to classify text.", tone: "error" } };
+      return { ok: false, notice: { message: "Failed to classify text.", tone: "error" } };
     }
   }
 
   async addCustomTag(name: string, options?: { keywordId?: number; parentId?: number; segmentId?: string | null }, tags?: TagItem[]): Promise<ClassificationResult> {
     const tag = name.trim();
-    if (!tag) return { success: false, notice: { message: "Tag name is empty", tone: "error" } };
+    if (!tag) return { ok: false, notice: { message: "Tag name is empty", tone: "error" } };
 
     try {
       const allTags = tags ?? [];
@@ -119,7 +113,7 @@ export class TaggingWorkflowService {
         return false;
       });
 
-      if (exists) return { success: false, notice: { message: "This tag already exists in this segment", tone: "error" } };
+      if (exists) return { ok: false, notice: { message: "This tag already exists in this segment", tone: "error" } };
 
       const newTag: TagItem = {
         name: tag,
@@ -129,9 +123,9 @@ export class TaggingWorkflowService {
         segmentId: targetSegId,
       };
 
-      return { success: true, notice: { message: "Tag added successfully.", tone: "success" }, tags: [newTag, ...allTags] };
+      return { ok: true, notice: { message: "Tag added successfully.", tone: "success" }, tags: [newTag, ...allTags] };
     } catch (error) {
-      return { success: false, notice: { message: "Failed to add tag.", tone: "error" } };
+      return { ok: false, notice: { message: "Failed to add tag.", tone: "error" } };
     }
   }
 
@@ -151,7 +145,7 @@ export class TaggingWorkflowService {
       return true;
     });
 
-    return { success: true, notice: { message: "Tag deleted successfully.", tone: "success" }, tags: filteredTags };
+    return { ok: true, notice: { message: "Tag deleted successfully.", tone: "success" }, tags: filteredTags };
   }
 }
 

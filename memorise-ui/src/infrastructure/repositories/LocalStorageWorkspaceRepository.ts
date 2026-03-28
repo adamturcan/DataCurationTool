@@ -6,8 +6,7 @@ import {
   workspaceToPersistence,
   type WorkspacePersistence,
 } from "../../core/entities/mappers";
-import type { Workspace as WorkspaceDTO, Translation } from "../../types/Workspace";
-import type { Segment } from "../../types/Segment";
+import type { Workspace as WorkspaceDTO, Translation, Segment } from "../../types";
 import { errorHandlingService } from "../services/ErrorHandlingService";
 
 const STORAGE_KEY = "memorise.workspaces";

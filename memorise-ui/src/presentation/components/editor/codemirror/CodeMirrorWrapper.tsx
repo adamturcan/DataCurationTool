@@ -3,7 +3,7 @@ import CodeMirror, { type ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { EditorView } from "@codemirror/view";
 import { Transaction } from "@codemirror/state";
 
-import type { NerSpan } from "../../../../types/NotationEditor";
+import type { NerSpan, SelectionBox, SpanCoordMap } from "../../../../types";
 
 import { editorTheme } from "./theme/theme";
 import { spansFacet, spanDecorationField } from "./features/spans/spanDecorations";
@@ -14,9 +14,9 @@ import { createSelectionObserver } from "./features/core/selectionObserver";
 interface Props {
   value: string;
   spans: NerSpan[];
-  onChange: (value: string, liveCoords?: Map<string, { start: number; end: number }>, deadIds?: string[]) => void;
+  onChange: (value: string, liveCoords?: SpanCoordMap, deadIds?: string[]) => void;
   onSpanClick?: (span: NerSpan, anchorElement: HTMLElement, replaceTextFn: (newText: string) => void) => void;
-  onSelectionChange?: (selection: { start: number; end: number; top: number; left: number } | null) => void;
+  onSelectionChange?: (selection: SelectionBox | null) => void;
   placeholder?: string;
   onDropTextPosition?: (localOffset: number, dataTransfer: DataTransfer) => void;
 }
@@ -93,7 +93,7 @@ export const CodeMirrorWrapper: React.FC<Props> = ({
 
           const decorations = viewUpdate.state.field(spanDecorationField);
           const iter = decorations.iter();
-          const liveCoords = new Map<string, { start: number; end: number }>();
+          const liveCoords: SpanCoordMap = new Map();
 
           while (iter.value !== null) {
             const id = iter.value.spec.attributes["data-span-id"];

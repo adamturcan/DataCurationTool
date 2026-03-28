@@ -1,7 +1,7 @@
 
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import type { ThesaurusIndexItem } from '../../types/Thesaurus';
+import type { ThesaurusIndexItem } from '../../types';
 
 export function useThesaurusWorker() {
   const workerRef = useRef<Worker | null>(null);

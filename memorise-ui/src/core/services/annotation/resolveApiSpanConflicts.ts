@@ -1,4 +1,4 @@
-import type { NerSpan } from "../../../types/NotationEditor";
+import type { NerSpan } from "../../../types";
 import { Annotation } from "../../entities/Annotation";
 
 const keyOfSpan = (s: NerSpan) => `${s.start}:${s.end}:${s.entity}`;

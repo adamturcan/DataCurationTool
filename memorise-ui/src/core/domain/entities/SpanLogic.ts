@@ -1,4 +1,4 @@
-import type { NerSpan } from "../../../types/NotationEditor";
+import type { NerSpan, SpanCoordMap } from "../../../types";
 
 export const SpanLogic = {
 
@@ -20,7 +20,7 @@ export const SpanLogic = {
 
   syncLiveCoords: (
     spans: NerSpan[],
-    liveCoords: Map<string, { start: number; end: number }>,
+    liveCoords: SpanCoordMap,
     globalOffset: number,
     shiftedSet: Set<string>
   ): NerSpan[] => {

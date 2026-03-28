@@ -1,13 +1,9 @@
 import type { AppError } from '../../infrastructure/services/ErrorHandlingService';
-import type { NoticeOptions, NoticeTone } from '../../types/Notice';
-
-export interface PresentedError extends NoticeOptions {
-  message: string;
-}
+import type { Notice, NoticeTone } from '../../types';
 
 const DEFAULT_FALLBACK_MESSAGE = 'Something went wrong. Please try again.';
 
-const ERROR_CATALOG: Record<string, PresentedError> = {
+const ERROR_CATALOG: Record<string, Notice> = {
   NETWORK_ERROR: {
     message: 'Network issue detected. Check your connection and try again.',
     tone: 'error',
@@ -58,7 +54,7 @@ const SEVERITY_TO_TONE: Record<NonNullable<AppError['severity']>, NoticeTone> = 
   critical: 'error',
 };
 
-function deriveFromCode(code: string): PresentedError | undefined {
+function deriveFromCode(code: string): Notice | undefined {
   if (code.startsWith('HTTP_')) {
     return {
       message: 'The service is unavailable at the moment. Please try again shortly.',
@@ -92,7 +88,7 @@ function deriveFromCode(code: string): PresentedError | undefined {
   return undefined;
 }
 
-export function presentError(error: AppError, defaults?: Partial<PresentedError>): PresentedError {
+export function presentError(error: AppError, defaults?: Partial<Notice>): Notice {
   const code = error.code ?? 'UNKNOWN';
   const catalogEntry = ERROR_CATALOG[code] ?? deriveFromCode(code);
 

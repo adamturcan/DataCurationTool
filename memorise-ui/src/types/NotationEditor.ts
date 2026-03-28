@@ -12,11 +12,13 @@ export type NerSpan = {
 };
 
 export type SelectionBox = {
-  top: number;
-  left: number;
   start: number;
   end: number;
+  top: number;
+  left: number;
 };
+
+export type SpanCoordMap = Map<string, { start: number; end: number }>;
 
 export type SpanBox = {
   top: number;

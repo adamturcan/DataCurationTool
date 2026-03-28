@@ -1,15 +1,10 @@
 import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
 import { SpanLogic } from "../../core/domain/entities/SpanLogic";
 import { getApiService } from "../../infrastructure/providers/apiProvider";
-import type { Notice } from "../../types/Notice";
-import type { SessionPatch } from "../../types/SessionPatch";
-import type { Translation } from "../../types/Workspace";
-import type { Segment } from "../../types/Segment";
+import type { SessionPatch, Translation, Segment, WorkflowResult } from "../../types";
 
-export type SegmentationResult = {
-  ok: boolean;
+export type SegmentationResult = WorkflowResult & {
   patch?: SessionPatch;
-  notice: Notice;
 }
 
 

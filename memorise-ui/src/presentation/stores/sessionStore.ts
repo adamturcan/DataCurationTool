@@ -1,9 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { Workspace, Translation } from '../../types/Workspace';
-import type { NerSpan } from '../../types/NotationEditor';
-import type { Segment } from '../../types/Segment';
-import { populateSegmentText } from '../../types/Segment';
+import type { Workspace, Translation, NerSpan, Segment } from '../../types';
+import { populateSegmentText } from '../../types';
 
 
 const areSpansEqual = (a: NerSpan[], b: NerSpan[]) => {
@@ -50,7 +48,7 @@ interface SessionStore {
   setActiveTab: (tab: string) => void;
   
   setActiveSegmentId: (id: string | undefined) => void;
-  updateActiveLayer: (updates: any) => void;
+  updateActiveLayer: (updates: Partial<Workspace> | Partial<Translation>) => void;
 }
 
 export const useSessionStore = create<SessionStore>()(
@@ -235,7 +233,7 @@ export const useSessionStore = create<SessionStore>()(
         set({ activeSegmentId: id });
       },
 
-      updateActiveLayer: (updates: any) => set((state) => {
+      updateActiveLayer: (updates: Partial<Workspace> | Partial<Translation>) => set((state) => {
         if (!state.session) return state; 
       
         if (state.activeTab === "original") {

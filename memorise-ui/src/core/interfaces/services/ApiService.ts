@@ -1,6 +1,4 @@
-import type { NerSpan } from '../../../types/NotationEditor';
-import type { LanguageCode, TranslationRequest, TranslationResponse } from '../../../types/Translation';
-import type { Segment } from '../../../types/Segment';
+import type { NerSpan, LanguageCode, TranslationRequest, TranslationResponse, Segment } from '../../../types';
 
 export type ClassificationResult = unknown;
 

@@ -1,10 +1,10 @@
 import React from "react";
 import { EditorView } from "@codemirror/view";
-import type { NerSpan } from "../../../../../../types/NotationEditor";
+import type { NerSpan, SelectionBox } from "../../../../../../types";
 
 export const createSelectionObserver = (
   spans: NerSpan[],
-  onSelectionChange?: (sel: { start: number; end: number; top: number; left: number } | null) => void,
+  onSelectionChange?: (sel: SelectionBox | null) => void,
   timeoutRef?: React.MutableRefObject<ReturnType<typeof setTimeout> | null>
 ) => {
   return EditorView.updateListener.of((update) => {

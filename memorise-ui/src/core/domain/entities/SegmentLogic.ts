@@ -1,4 +1,4 @@
-import type { Segment } from "../../../types/Segment";
+import type { Segment } from "../../../types";
 
 export const SegmentLogic = {
 

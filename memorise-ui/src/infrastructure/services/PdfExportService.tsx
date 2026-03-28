@@ -1,4 +1,4 @@
-import type { Workspace } from "../../types/Workspace";
+import type { Workspace } from "../../types";
 
 export class PdfExportService {
   static async exportWorkspace(_workspace: Workspace): Promise<void> {

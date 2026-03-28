@@ -5,7 +5,7 @@
  * build hierarchical data structures for display.
  */
 
-import type { ThesaurusIndexItem } from '../../types/Thesaurus';
+import type { ThesaurusIndexItem } from '../../types';
 import type { TagRow } from '../../presentation/components/rightPanel/RightPanel';
 
 /**

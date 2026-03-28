@@ -1,9 +1,8 @@
 import { useCallback, useState } from "react";
-import { useSessionStore } from "../stores/sessionStore";
-import { useNotificationStore } from "../stores/notificationStore";
+import { useSessionStore, useNotificationStore } from "../stores";
 import { annotationWorkflowService } from "../../application/services/AnnotationWorkflowService";
 import { getSpanId, safeSubstring, normalizeReplacement, SPLIT_DELIMITERS } from "../components/editor/utils/editorUtils";
-import type { NerSpan } from "../../types/NotationEditor";
+import type { NerSpan, SelectionBox } from "../../types";
 import type { useLayerOperations } from "./useLayerOperations";
 
 type LayerOps = ReturnType<typeof useLayerOperations>;
@@ -33,7 +32,7 @@ export function useSpanInteractions(
     setCmReplaceFn(null);
   }, []);
 
-  const handleSpanClick = useCallback((span: NerSpan, element: HTMLElement, replaceFn: any, localLang: string, vStart: number) => {
+  const handleSpanClick = useCallback((span: NerSpan, element: HTMLElement, replaceFn: (newText: string) => void, localLang: string, vStart: number) => {
     setNewSelection(null);
     const globalizedSpan = { ...span, start: span.start + vStart, end: span.end + vStart };
     const id = getSpanId(globalizedSpan);
@@ -59,7 +58,7 @@ export function useSpanInteractions(
     setNewSelection(null);
   }, [newSelection, setActiveSegmentId, session, resolveLayer, applyLayerPatch, markSegmentEdited]);
 
-  const handleSelectionChange = useCallback((sel: { start: number; end: number; top: number; left: number } | null, segmentId: string, localLang: string, virtualStart: number) => {
+  const handleSelectionChange = useCallback((sel: SelectionBox | null, segmentId: string, localLang: string, virtualStart: number) => {
     if (!sel) {
       setNewSelection(null);
       onSplitCleared();
