@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
@@ -20,38 +20,22 @@ function hoistShimPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
-  base: "/NPRG045/",
-  plugins: [
-    hoistShimPlugin(),
-    react(),
-    visualizer({
-      filename: "./dist/stats.html",
-      open: false,
-      gzipSize: true,
-      brotliSize: true,
-    }),
-  ],
-  build: {
-    chunkSizeWarningLimit: 750,
-  },
-  server: {
-    proxy: {
-      "/api/semtag": {
-        target: "https://semtag-api.dev.memorise.sdu.dk",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/semtag/, "/semtag"),
-      },
-      "/api/ner": {
-        target: "https://ner-api.dev.memorise.sdu.dk",  
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/ner/, ""),  
-      },
-      "/api/mt": {
-        target: "https://quest.ms.mff.cuni.cz/dimbu",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/mt/, ""),
-      },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, ".", "VITE_");
+  return {
+    base: env.VITE_BASE_PATH || "/NPRG045/",
+    plugins: [
+      hoistShimPlugin(),
+      react(),
+      visualizer({
+        filename: "./dist/stats.html",
+        open: false,
+        gzipSize: true,
+        brotliSize: true,
+      }),
+    ],
+    build: {
+      chunkSizeWarningLimit: 750,
     },
-  },
+  };
 });

@@ -1,0 +1,13 @@
+services:
+  memorise-ui:
+    build:
+      context: .
+      args:
+        VITE_BASE_PATH: /
+        VITE_NER_API_URL: ${VITE_NER_API_URL:-https://ner-api.dev.memorise.sdu.dk/recognize}
+        VITE_SEGMENT_API_URL: ${VITE_SEGMENT_API_URL:-https://textseg-api.dev.memorise.sdu.dk/segment}
+        VITE_CLASSIFY_API_URL: ${VITE_CLASSIFY_API_URL:-https://semtag-api.dev.memorise.sdu.dk/classify}
+        VITE_TRANSLATION_API_URL: ${VITE_TRANSLATION_API_URL:-https://mt-api.dev.memorise.sdu.dk}
+    ports:
+      - "3000:80"
+    restart: unless-stopped

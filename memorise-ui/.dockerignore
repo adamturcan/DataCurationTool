@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+.git
+.github
+.vscode
+.idea
+coverage
+docs
+thesis_files
+*.log
+*.local
+.DS_Store
