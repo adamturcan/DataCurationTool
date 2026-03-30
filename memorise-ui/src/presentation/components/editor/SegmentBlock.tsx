@@ -21,7 +21,9 @@ import { CodeMirrorWrapper } from "./codemirror/CodeMirrorWrapper";
 import { SegmentLogic } from "../../../core/domain/entities/SegmentLogic";
 import type { NerSpan, SelectionBox, SpanCoordMap, Segment, Workspace, Translation } from "../../../types";
 import { getSpanId } from "./utils/editorUtils";
-import { COLORS } from "../../../shared/constants/ui";
+import { ENTITY_COLORS } from "../../../shared/constants/notationEditor";
+import { shadows } from "../../../shared/theme";
+import { sx as sxUtil } from "../../../shared/styles";
 import { useSegmentDrag } from "./context/SegmentDragContext";
 import type { LanguageOption } from "../../hooks";
 
@@ -217,7 +219,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
               ${alpha("#ef4444", 0.07)} 10px
             )`
           : "none",
-        borderBottom: `2px dashed ${alpha(COLORS.dateBlue, 0.3)}`,
+        borderBottom: `2px dashed ${alpha(ENTITY_COLORS.DATE, 0.3)}`,
         display: "flex",
         flexDirection: "column",
         transition: isDragging ? "none" : "background-color 0.2s ease",
@@ -242,14 +244,14 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
               onClick={(e) => { e.stopPropagation(); onJoinUp(segment.id); }}
               sx={{
                 transition: "transform 0.2s ease",
-                bgcolor: "#ffffff",
-                border: `1px solid ${COLORS.dateBlue}`,
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                bgcolor: "background.paper",
+                border: `1px solid ${ENTITY_COLORS.DATE}`,
+                boxShadow: shadows.sm,
                 width: 28, height: 28,
                 "&:hover": { bgcolor: "#f0f7ff", transform: "scale(1.1)" }
               }}
             >
-              <CallMergeIcon sx={{ transform: "rotate(180deg)", fontSize: "1.1rem", color: COLORS.dateBlue }} />
+              <CallMergeIcon sx={{ transform: "rotate(180deg)", fontSize: "1.1rem", color: ENTITY_COLORS.DATE }} />
             </IconButton>
           </Tooltip>
           {/* Drag Handle */}
@@ -266,16 +268,16 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
               sx={{
                 cursor: "grab",
                 transition: "transform 0.2s ease",
-                bgcolor: "#ffffff",
-                border: `1px solid ${COLORS.dateBlue}`,
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                bgcolor: "background.paper",
+                border: `1px solid ${ENTITY_COLORS.DATE}`,
+                boxShadow: shadows.sm,
                 width: 28, height: 28,
                 ml: 1,
                 "&:hover": { bgcolor: "#f0f7ff", transform: "scale(1.1)" },
                 "&:active": { cursor: "grabbing" }
               }}
             >
-              <DragIndicatorIcon sx={{ fontSize: "1.1rem", color: COLORS.dateBlue }} />
+              <DragIndicatorIcon sx={{ fontSize: "1.1rem", color: ENTITY_COLORS.DATE }} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -287,11 +289,11 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
         borderBottom: isHeaderOpen ? "1px solid #e2e8f0" : "none",
         transition: "background-color 0.2s ease"
       }}>
-        <Box sx={{ position: "absolute", top: isHeaderOpen ? "8px" : "4px", right: "8px", zIndex: 10, display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Box sx={{ position: "absolute", top: isHeaderOpen ? "8px" : "4px", right: "8px", zIndex: 10, ...sxUtil.flexRow, gap: 0.5 }}>
           {isSegmentEdited && !isHeaderOpen && (
             <Tooltip title="Segment manually edited">
               <Box sx={{
-                display: "flex", alignItems: "center", gap: 0.5,
+                ...sxUtil.flexRow, gap: 0.5,
                 bgcolor: alpha("#f59e0b", 0.12), color: "#b45309",
                 borderRadius: "12px", px: 1, py: 0.25,
                 fontSize: "11px", fontWeight: 600, lineHeight: 1,
@@ -310,7 +312,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
 
         <Collapse in={isHeaderOpen}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 48px 8px 16px" }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box sx={{ ...sxUtil.flexRow, gap: 1.5 }}>
               <TranslateIcon sx={{ color: "#94a3b8", fontSize: "18px" }} />
               <FormControl size="small" sx={{ minWidth: 140 }}>
                 <Select value={localLang} onChange={(e) => setLocalLang(e.target.value)} sx={{ backgroundColor: "transparent", fontWeight: 600, fontSize: "12px", height: "28px", "& fieldset": { border: "none" } }}>
@@ -318,21 +320,21 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
                   {availableLangs.map((lang: string) => <MenuItem key={lang} value={lang}>Translation: {lang.toUpperCase()}</MenuItem>)}
                 </Select>
               </FormControl>
-              <Tooltip title="Translate segment"><IconButton size="small" onClick={(e) => { e.stopPropagation(); setAnchorEl(e.currentTarget); }} sx={{ bgcolor: COLORS.gold, color: COLORS.darkBlue, width: "28px", height: "28px", borderRadius: "6px" }}><AddIcon fontSize="small" /></IconButton></Tooltip>
+              <Tooltip title="Translate segment"><IconButton size="small" onClick={(e) => { e.stopPropagation(); setAnchorEl(e.currentTarget); }} sx={{ bgcolor: "gold.main", color: "secondary.main", width: "28px", height: "28px", borderRadius: "6px" }}><AddIcon fontSize="small" /></IconButton></Tooltip>
               {localLang !== "original" && (
                 <Tooltip title={isSegmentEdited ? "Cannot update: translation was manually edited" : "Re-translate this segment from API"}>
                   <span>
-                    <IconButton size="small" disabled={isSegmentEdited} onClick={(e) => { e.stopPropagation(); onUpdateTranslation(segment.id, localLang); }} sx={{ bgcolor: isSegmentEdited ? alpha("#9e9e9e", 0.08) : alpha(COLORS.dateBlue, 0.1), color: isSegmentEdited ? "#9e9e9e" : COLORS.dateBlue, borderRadius: "6px", width: "28px", height: "28px" }}><SyncIcon fontSize="small" /></IconButton>
+                    <IconButton size="small" disabled={isSegmentEdited} onClick={(e) => { e.stopPropagation(); onUpdateTranslation(segment.id, localLang); }} sx={{ bgcolor: isSegmentEdited ? alpha("#9e9e9e", 0.08) : alpha(ENTITY_COLORS.DATE, 0.1), color: isSegmentEdited ? "#9e9e9e" : ENTITY_COLORS.DATE, borderRadius: "6px", width: "28px", height: "28px" }}><SyncIcon fontSize="small" /></IconButton>
                   </span>
                 </Tooltip>
               )}
-              {localLang !== "original" && <Tooltip title="Clear Translation"><IconButton size="small" onClick={(e) => { e.stopPropagation(); setDeleteDialogOpen(true); }} sx={{ bgcolor: alpha("#d32f2f", 0.1), color: "#d32f2f", width: "28px", height: "28px", borderRadius: "6px" }}><DeleteOutlineIcon fontSize="small" /></IconButton></Tooltip>}
+              {localLang !== "original" && <Tooltip title="Clear Translation"><IconButton size="small" onClick={(e) => { e.stopPropagation(); setDeleteDialogOpen(true); }} sx={{ bgcolor: (t) => alpha(t.palette.error.main, 0.1), color: "error.main", width: "28px", height: "28px", borderRadius: "6px" }}><DeleteOutlineIcon fontSize="small" /></IconButton></Tooltip>}
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={{ ...sxUtil.flexRow, gap: 1 }}>
               {isSegmentEdited && (
                 <Tooltip title="Segment manually edited">
                   <Box sx={{
-                    display: "flex", alignItems: "center", gap: 0.5,
+                    ...sxUtil.flexRow, gap: 0.5,
                     bgcolor: alpha("#f59e0b", 0.12), color: "#b45309",
                     border: `1px solid ${alpha("#f59e0b", 0.3)}`,
                     borderRadius: "12px", px: 1, py: 0.25,
@@ -344,8 +346,8 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
                   </Box>
                 </Tooltip>
               )}
-              <Tooltip title="Run NER on segment"><IconButton size="small" onClick={(e) => { e.stopPropagation(); onRunNer(segment.id, localLang); }} sx={{ bgcolor: alpha(COLORS.magenta, 0.1), color: COLORS.magenta, borderRadius: "6px", width: "28px", height: "28px" }}><ManageSearchIcon fontSize="small" /></IconButton></Tooltip>
-              <Tooltip title="Run Sem-Tag on segment"><IconButton size="small" onClick={(e) => { e.stopPropagation(); onRunSemTag(segment.id, localLang); }} sx={{ bgcolor: alpha(COLORS.magenta, 0.1), color: COLORS.magenta, borderRadius: "6px", width: "28px", height: "28px" }}><LabelOutlinedIcon fontSize="small" /></IconButton></Tooltip>
+              <Tooltip title="Run NER on segment"><IconButton size="small" onClick={(e) => { e.stopPropagation(); onRunNer(segment.id, localLang); }} sx={{ bgcolor: alpha(ENTITY_COLORS.PER, 0.1), color: ENTITY_COLORS.PER, borderRadius: "6px", width: "28px", height: "28px" }}><ManageSearchIcon fontSize="small" /></IconButton></Tooltip>
+              <Tooltip title="Run Sem-Tag on segment"><IconButton size="small" onClick={(e) => { e.stopPropagation(); onRunSemTag(segment.id, localLang); }} sx={{ bgcolor: alpha(ENTITY_COLORS.PER, 0.1), color: ENTITY_COLORS.PER, borderRadius: "6px", width: "28px", height: "28px" }}><LabelOutlinedIcon fontSize="small" /></IconButton></Tooltip>
             </Box>
           </Box>
         </Collapse>
@@ -361,7 +363,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
         ...(isDragging && !effectiveDropDisabled ? {
           "& .cm-editor, & .cm-scroller, & .cm-content": { cursor: "crosshair !important" },
           "& .cm-dropCursor": {
-            borderLeft: `3px solid ${COLORS.dateBlue} !important`,
+            borderLeft: `3px solid ${ENTITY_COLORS.DATE} !important`,
             marginLeft: "-1px !important"
           }
         } : {})
@@ -380,7 +382,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} PaperProps={{ sx: { maxHeight: 280, minWidth: 260 } }}>
         <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #eee' }}><TextField fullWidth size="small" placeholder="Search language..." value={languageSearch} autoFocus onChange={(e) => setLanguageSearch(e.target.value)} variant="standard" InputProps={{ disableUnderline: true }} /></Box>
         <Box sx={{ px: 1, pb: 1, maxHeight: 220, overflowY: "auto" }}>
-          {isLanguageListLoading ? <MenuItem disabled><CircularProgress size={16} sx={{ mr: 1 }} /> Loading…</MenuItem> : filteredLanguageOptions.length > 0 ? filteredLanguageOptions.map(({ code, label }: LanguageOption) => <MenuItem key={code} onClick={(e) => { e.stopPropagation(); onAddTranslation(segment.id, code); setLocalLang(code); setAnchorEl(null); }}><Box sx={{ display: "flex", flexDirection: "column" }}><span style={{ textTransform: "uppercase", fontWeight: 600 }}>{code}</span><span style={{ fontSize: "0.8rem", opacity: 0.8 }}>{label}</span></Box></MenuItem>) : <MenuItem disabled>No matches</MenuItem>}
+          {isLanguageListLoading ? <MenuItem disabled><CircularProgress size={16} sx={{ mr: 1 }} /> Loading…</MenuItem> : filteredLanguageOptions.length > 0 ? filteredLanguageOptions.map(({ code, label }: LanguageOption) => <MenuItem key={code} onClick={(e) => { e.stopPropagation(); onAddTranslation(segment.id, code); setLocalLang(code); setAnchorEl(null); }}><Box sx={{ ...sxUtil.flexColumn }}><span style={{ textTransform: "uppercase", fontWeight: 600 }}>{code}</span><span style={{ fontSize: "0.8rem", opacity: 0.8 }}>{label}</span></Box></MenuItem>) : <MenuItem disabled>No matches</MenuItem>}
         </Box>
       </Menu>
 

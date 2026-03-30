@@ -2,7 +2,8 @@ import React from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { alpha } from "@mui/material/styles";
-import { COLORS } from "../../../../shared/constants/ui";
+import { ENTITY_COLORS } from "../../../../shared/constants/notationEditor";
+import { sx as sxUtil } from "../../../../shared/styles";
 
 export type TagRow = {
   name: string;
@@ -20,10 +21,10 @@ interface TagItemProps {
 
 const TagItem: React.FC<TagItemProps> = React.memo(({ row, onDelete }) => {
   const isUser = row.source === "user";
-  const mainColor = isUser ? COLORS.magenta : COLORS.dateBlue;
+  const mainColor = isUser ? ENTITY_COLORS.PER : ENTITY_COLORS.DATE;
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, py: 0.5, "&:hover .delete-btn": { opacity: 1 } }}>
+    <Box sx={{ ...sxUtil.flexRow, gap: 0.5, py: 0.5, "&:hover .delete-btn": { opacity: 1 } }}>
       <Box sx={{ 
         flex: 1, minWidth: 0, 
         backgroundColor: alpha(mainColor, 0.08), 
@@ -32,7 +33,7 @@ const TagItem: React.FC<TagItemProps> = React.memo(({ row, onDelete }) => {
         border: `1px solid ${alpha(mainColor, 0.2)}`, 
         overflow: 'hidden' 
       }}>
-        <Typography sx={{ m: 0, fontSize: 12, fontWeight: 600, color: mainColor, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={row.name}>
+        <Typography sx={{ m: 0, fontSize: 12, fontWeight: 600, color: mainColor, lineHeight: 1.2, ...sxUtil.truncate }} title={row.name}>
           {row.name}
         </Typography>
       </Box>

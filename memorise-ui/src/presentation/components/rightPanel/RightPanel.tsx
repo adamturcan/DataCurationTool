@@ -1,11 +1,11 @@
 import React from "react";
 import { Box, Fade } from "@mui/material";
+import { shadows } from "../../../shared/theme";
+import { sx as sxUtil } from "../../../shared/styles";
 
 import TagTable, { type TagRow } from "./tags/TagTable";
 import type { ThesaurusItem } from "./inputs/TagThesaurusInput";
 import type { ThesaurusIndexItem } from "../../../types";
-
-import { COLORS } from "../../../shared/constants/ui";
 
 export type { TagRow };
 
@@ -58,23 +58,22 @@ const RightPanel: React.FC<Props> = (props) => {
           ? "opacity 0.01s linear 0s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s, width 0.25s ease-out 0.4s, height 0.3s ease-out 0.65s, border-radius 0.3s ease 0.65s"
           : "height 0.3s ease-in 0s, border-radius 0.3s ease 0s, width 0.25s ease-in 0.3s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.55s, opacity 0.1s linear 0.85s",
 
-        background: "#FFFFFF",
-        border: `1px solid ${COLORS.border}`,
+        bgcolor: "background.paper",
+        border: 1,
+        borderColor: "divider",
 
 
-        boxShadow: props.isExpanded
-          ? "0 14px 40px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.1)"
-          : "0 8px 24px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.2)",
+        boxShadow: props.isExpanded ? shadows.lg : shadows.md,
 
         borderRadius: props.isExpanded ? "12px" : "21px",
         overflow: "hidden",
         pointerEvents: "auto"
       }}>
 
-        <Box sx={{ position: "relative", minWidth: 300, height: "100%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ position: "relative", minWidth: 300, height: "100%", ...sxUtil.flexColumn }}>
 
           <Fade in={props.isExpanded} timeout={{ enter: 950, exit: 50 }}>
-            <Box sx={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
+            <Box sx={{ position: "absolute", inset: 0, ...sxUtil.flexColumn }}>
               <TagTable
                 data={props.tags}
                 onDelete={props.onDeleteTag}

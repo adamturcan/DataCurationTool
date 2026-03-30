@@ -12,7 +12,9 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
 import type { LanguageOption } from "../../../hooks";
-import { COLORS } from "../../../../shared/constants/ui";
+import { ENTITY_COLORS } from "../../../../shared/constants/notationEditor";
+import { shadows } from "../../../../shared/theme";
+import { sx as sxUtil } from "../../../../shared/styles";
 
 interface EditorGlobalMenuProps {
   onNer: () => void;
@@ -34,9 +36,9 @@ const tooltipProps = {
   tooltip: {
     sx: {
       bgcolor: alpha("#FFFFFF", 0.95),
-      color: COLORS.darkBlue,
-      border: `1px solid ${alpha(COLORS.darkBlue, 0.16)}`,
-      boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+      color: "secondary.main",
+      border: `1px solid ${alpha("#21426C", 0.16)}`,
+      boxShadow: shadows.md,
       borderRadius: "8px",
       padding: "6px 12px",
       fontSize: 13,
@@ -76,10 +78,10 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
   }, [hasActiveSegment]);
 
   const actions = [
-    { key: "save", icon: <SaveOutlinedIcon fontSize="small" />, name: "Save Workspace", onClick: () => onSave(), accent: COLORS.green },
-    { key: "segment", icon: <CallSplitIcon fontSize="small" />, name: isAlreadySegmented ? "Document already segmented" : "Auto-Segment", onClick: () => onSegment(), accent: COLORS.dateBlue, disabled: isAlreadySegmented },
-    { key: "ner", icon: <ManageSearchIcon fontSize="small" />, name: "Run NER", onClick: () => onNer(), accent: COLORS.magenta },
-    { key: "translate", icon: <TranslateIcon fontSize="small" />, name: "Translate Document", onClick: () => { setShowTranslate(!showTranslate); onToggleTagPanel(false); }, accent: COLORS.orange },
+    { key: "save", icon: <SaveOutlinedIcon fontSize="small" />, name: "Save Workspace", onClick: () => onSave(), accent: ENTITY_COLORS.LOC },
+    { key: "segment", icon: <CallSplitIcon fontSize="small" />, name: isAlreadySegmented ? "Document already segmented" : "Auto-Segment", onClick: () => onSegment(), accent: ENTITY_COLORS.DATE, disabled: isAlreadySegmented },
+    { key: "ner", icon: <ManageSearchIcon fontSize="small" />, name: "Run NER", onClick: () => onNer(), accent: ENTITY_COLORS.PER },
+    { key: "translate", icon: <TranslateIcon fontSize="small" />, name: "Translate Document", onClick: () => { setShowTranslate(!showTranslate); onToggleTagPanel(false); }, accent: ENTITY_COLORS.ORG },
     {
       key: "semtag",
       icon: <LabelOutlinedIcon fontSize="small" />,
@@ -92,7 +94,7 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
         setShowTagOptions(willOpen);
         setShowTranslate(false);
       },
-      accent: COLORS.magenta
+      accent: ENTITY_COLORS.PER
     },
   ];
 
@@ -101,15 +103,15 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
       <Box sx={{
         display: "flex",
         alignItems: "center",
-        backgroundColor: "#ffffff",
+        bgcolor: "background.paper",
         borderRadius: "30px",
         padding: "4px 16px",
-        boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-        border: "1px solid #e2e8f0",
+        boxShadow: shadows.md,
+        border: 1, borderColor: "divider",
         transition: "all 0.3s ease"
       }}>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ ...sxUtil.flexRow, gap: 1 }}>
           {actions.map((action) => (
             <Box key={action.key} sx={{ display: "flex", alignItems: "center" }}>
 
@@ -140,7 +142,7 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
               {action.key === "translate" && (
                 <Collapse in={showTranslate} orientation="horizontal" unmountOnExit>
                   <Box sx={{ display: "flex", alignItems: "center", width: "max-content" }}>
-                    <Box sx={{ width: "1px", height: "24px", bgcolor: "#e2e8f0", mx: 1 }} />
+                    <Box sx={{ width: "1px", height: "24px", bgcolor: "divider", mx: 1 }} />
                     <Box sx={{ width: 180, pr: 1, display: "flex", alignItems: "center" }}>
                       <Autocomplete
                         fullWidth size="small" disableClearable forcePopupIcon={false}
@@ -150,10 +152,10 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
                         onChange={(_event, newValue: LanguageOption) => {
                           if (newValue) { onTranslateAll(newValue.code); setShowTranslate(false); }
                         }}
-                        slotProps={{ paper: { sx: { mt: 1, borderRadius: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", border: "1px solid #e2e8f0" } } }}
+                        slotProps={{ paper: { sx: { mt: 1, borderRadius: "8px", boxShadow: shadows.md, border: 1, borderColor: "divider" } } }}
                         renderOption={(props, option: LanguageOption) => (
                           <li {...props} key={option.code}>
-                            <Box sx={{ display: "flex", flexDirection: "column", py: 0.5 }}>
+                            <Box sx={{ ...sxUtil.flexColumn, py: 0.5 }}>
                               <span style={{ textTransform: "uppercase", fontWeight: 700, color: '#1e293b' }}>{option.code}</span>
                               <span style={{ fontSize: "0.8rem", color: '#64748b' }}>{option.label}</span>
                             </Box>
@@ -167,7 +169,7 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
                         )}
                       />
                     </Box>
-                    <Box sx={{ width: "1px", height: "24px", bgcolor: "#e2e8f0", mx: 1 }} />
+                    <Box sx={{ width: "1px", height: "24px", bgcolor: "divider", mx: 1 }} />
                   </Box>
                 </Collapse>
               )}
@@ -176,7 +178,7 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
               {action.key === "semtag" && (
                 <Collapse in={showTagOptions} orientation="horizontal" unmountOnExit>
                   <Box sx={{ display: "flex", alignItems: "center", width: "max-content" }}>
-                    <Box sx={{ width: "1px", height: "24px", bgcolor: "#e2e8f0", mx: 1 }} />
+                    <Box sx={{ width: "1px", height: "24px", bgcolor: "divider", mx: 1 }} />
                     <Box sx={{ display: "flex", alignItems: "center", pr: 0.5 }}>
 
                       <Tooltip title="Auto-Tag Document" placement="bottom" componentsProps={tooltipProps}>
@@ -186,10 +188,10 @@ const EditorGlobalMenu: React.FC<EditorGlobalMenuProps> = ({
                             sx={{
                               width: 42,
                               height: 42,
-                              color: COLORS.magenta,
-                              bgcolor: alpha(COLORS.magenta, 0.08),
+                              color: ENTITY_COLORS.PER,
+                              bgcolor: alpha(ENTITY_COLORS.PER, 0.08),
                               transition: "all 0.2s ease",
-                              "&:hover": { bgcolor: alpha(COLORS.magenta, 0.15), transform: "scale(1.1)" }
+                              "&:hover": { bgcolor: alpha(ENTITY_COLORS.PER, 0.15), transform: "scale(1.1)" }
                             }}
                           >
                             <AutoFixHighIcon fontSize="small" />

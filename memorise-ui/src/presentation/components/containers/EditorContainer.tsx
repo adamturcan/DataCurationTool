@@ -10,7 +10,9 @@ import { EditorGlobalMenu, CategoryMenu } from "../editor/menus";
 import { SegmentBlock } from "../editor/SegmentBlock";
 import type { SegmentHandlers, SegmentTranslationHandlers } from "../editor/SegmentBlock";
 import { SegmentDragProvider } from "../editor/context/SegmentDragContext";
-import { COLORS } from "../../../shared/constants/ui";
+import { ENTITY_COLORS } from "../../../shared/constants/notationEditor";
+import { shadows } from "../../../shared/theme";
+import { sx as sxUtil } from "../../../shared/styles";
 
 const EditorContainer: React.FC = () => {
   const notify = useNotificationStore.getState().enqueue;
@@ -27,7 +29,7 @@ const EditorContainer: React.FC = () => {
   const spans = useSpanInteractions(layers, splits.setSplitAnchor, () => splits.setSplitAnchor(null));
 
   return (
-    <div style={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", boxSizing: "border-box", overflow: "hidden", backgroundColor: "transparent" }}>
+    <div style={{ height: "100%", width: "100%", ...sxUtil.flexColumn, boxSizing: "border-box", overflow: "hidden", backgroundColor: "transparent" }}>
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", pt: 2, pb: 1, zIndex: 50 }}>
         <EditorGlobalMenu
@@ -53,7 +55,7 @@ const EditorContainer: React.FC = () => {
       </Box>
 
       <Box sx={{ flexGrow: 1, overflowY: "auto", width: "100%", px: { xs: 2, md: 4 }, py: 2 }}>
-        <Box sx={{ borderRadius: "8px", border: "1px solid #e2e8f0", boxShadow: "0 4px 12px rgba(0,0,0,0.04)", overflow: "hidden", backgroundColor: "transparent" }}>
+        <Box sx={{ borderRadius: "8px", border: "1px solid #e2e8f0", boxShadow: shadows.sm, overflow: "hidden", backgroundColor: "transparent" }}>
           {!session?.segments || session.segments.length === 0 ? (
             <SegmentDragProvider onDraggingChange={splits.setDraggingFromIndex} draggingFromIndex={splits.draggingFromIndex}>
               <SegmentBlock
@@ -143,10 +145,10 @@ const EditorContainer: React.FC = () => {
         anchorReference="anchorPosition"
         anchorPosition={splits.splitAnchor ? { top: splits.splitAnchor.top, left: splits.splitAnchor.left } : undefined}
         onClose={() => splits.setSplitAnchor(null)}
-        PaperProps={{ sx: { borderRadius: 2, mt: 1, boxShadow: "0 8px 16px rgba(0,0,0,0.1)" } }}
+        PaperProps={{ sx: { borderRadius: 2, mt: 1, boxShadow: shadows.md } }}
       >
         <MenuItem onClick={splits.handleConfirmSplit} sx={{ gap: 1.5, py: 1.2, px: 2 }}>
-          <CallSplitIcon fontSize="small" sx={{ color: COLORS.dateBlue }} />
+          <CallSplitIcon fontSize="small" sx={{ color: ENTITY_COLORS.DATE }} />
           <Typography variant="body2" fontWeight={600}>Split segment here</Typography>
         </MenuItem>
       </Menu>

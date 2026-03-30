@@ -20,7 +20,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import BlockIcon from "@mui/icons-material/Block";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { COLORS } from "../../../../shared/constants/ui";
+import { ENTITY_COLORS } from "../../../../shared/constants/notationEditor";
 
 // Types
 
@@ -57,13 +57,13 @@ type ExecState = "idle" | "executing" | "success" | "error";
 const MODE_ICON: Record<ActionGuardMode, React.ReactNode> = {
   block: <BlockIcon sx={{ color: "error.main", fontSize: 28 }} />,
   confirm: <WarningAmberIcon sx={{ color: "warning.main", fontSize: 28 }} />,
-  resolution: <InfoOutlinedIcon sx={{ color: COLORS.dateBlue, fontSize: 28 }} />,
+  resolution: <InfoOutlinedIcon sx={{ color: ENTITY_COLORS.DATE, fontSize: 28 }} />,
 };
 
 const MODE_TITLE_COLOR: Record<ActionGuardMode, string> = {
-  block: "#d32f2f",
-  confirm: "#ed6c02",
-  resolution: COLORS.dateBlue,
+  block: "#DC2626",  // error.main
+  confirm: "#ed6c02", // warning.main
+  resolution: ENTITY_COLORS.DATE,
 };
 
 // Component
@@ -181,7 +181,7 @@ const ActionGuardDialog: React.FC<ActionGuardDialogProps> = ({
                       />
                     )}
                     {isRunning && !isFailed && (
-                      <CircularProgress size={18} sx={{ color: COLORS.dateBlue }} />
+                      <CircularProgress size={18} sx={{ color: ENTITY_COLORS.DATE }} />
                     )}
                     {isFailed && (
                       <ErrorIcon sx={{ color: "error.main", fontSize: 20 }} />
@@ -257,8 +257,8 @@ const ActionGuardDialog: React.FC<ActionGuardDialogProps> = ({
               variant="contained"
               disabled={isExecuting || execState === "success"}
               sx={{
-                bgcolor: COLORS.dateBlue,
-                "&:hover": { bgcolor: "#1565C0" },
+                bgcolor: ENTITY_COLORS.DATE,
+                "&:hover": { bgcolor: "primary.dark" },
               }}
               startIcon={
                 isExecuting ? <CircularProgress size={16} color="inherit" /> : null

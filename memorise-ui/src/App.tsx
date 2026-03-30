@@ -4,10 +4,9 @@ import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react
 import {
   CssBaseline,
   ThemeProvider,
-  createTheme,
   Box,
-  responsiveFontSizes,
 } from "@mui/material";
+import theme from "./shared/theme";
 // React Router components for navigation and routing
 import {
   Routes,
@@ -29,27 +28,6 @@ const AccountPage = lazy(() => import("./presentation/pages/AccoutPage"));
 const WorkspacePage = lazy(() => import("./presentation/pages/WorkspacePage"));
 const ManageWorkspacesPage = lazy(() => import("./presentation/pages/ManageWorkspacesPage"));
 const LoginPage = lazy(() => import("./presentation/pages/LoginPage"));
-
-// Create the Material-UI theme
-let theme = createTheme({
-  palette: {
-    mode: "light",
-    primary: { main: "#2563eb" },
-    background: { default: "#545742" },
-  },
-  typography: {
-    fontFamily: ["DM Sans", "DM Mono", "Jacques Francois", "sans-serif"].join(
-      ","
-    ),
-    h1: { fontSize: "3.5rem", fontWeight: 700, lineHeight: 1.2 },
-    h2: { fontSize: "2.5rem", fontWeight: 700, lineHeight: 1.3 },
-    h3: { fontSize: "2rem", fontWeight: 700, lineHeight: 1.3 },
-    body1: { fontSize: "1rem", lineHeight: 1.5 },
-    body2: { fontSize: "0.875rem", lineHeight: 1.5 },
-  },
-});
-// Make theme responsive
-theme = responsiveFontSizes(theme);
 
 // Storage key for persisting the current user's username
 const USER_KEY = "memorise.user.v1";
@@ -224,7 +202,7 @@ const App: React.FC = () => {
           sx={{
             position: "fixed",
             inset: 0,
-            width: "100vw",
+            width: "100%",
             overflow: "clip",
             background: "linear-gradient(135deg, #2f3e34 0%, #8d7f57 100%)",
           }}

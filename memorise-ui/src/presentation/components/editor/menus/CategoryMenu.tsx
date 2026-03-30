@@ -129,7 +129,7 @@ const CategoryMenu: React.FC<ExtendedMenuProps> = ({
           key="delete"
           onMouseDown={preventFocusLoss}
           onClick={handleDeleteClick}
-          sx={{ color: "#b91c1c", fontWeight: 600 }}
+          sx={{ color: "error.dark", fontWeight: 600 }}
         >
           Delete
         </MenuItem>

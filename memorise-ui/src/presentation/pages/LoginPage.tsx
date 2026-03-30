@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { shadows } from "../../shared/theme";
 import { Box, Paper, TextField, Button, InputAdornment } from "@mui/material";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 
@@ -66,7 +67,7 @@ const LoginPage: React.FC<Props> = ({ onLogin, defaultUsername = "" }) => {
           borderRadius: 3,
           backgroundColor: "#1F2C24", // darker than background
           border: "1px solid rgba(255,255,255,0.05)",
-          boxShadow: "0 14px 40px rgba(0,0,0,0.6)",
+          boxShadow: shadows.lg,
           textAlign: "center",
         }}
       >
@@ -165,8 +166,7 @@ const LoginPage: React.FC<Props> = ({ onLogin, defaultUsername = "" }) => {
                 backgroundColor: "rgba(255,255,255,0.12)",
                 color: "rgba(255,255,255,0.35)",
               },
-              boxShadow:
-                "0 1px 0 rgba(12,24,38,0.08), 0 10px 30px rgba(12,24,38,0.35)",
+              boxShadow: shadows.md,
             }}
           >
             {submitting ? "Signing in…" : "Sign in"}

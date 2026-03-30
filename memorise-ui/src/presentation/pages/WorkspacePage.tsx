@@ -2,7 +2,6 @@ import React from "react";
 import { Box } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import EditorContainer from "../components/containers/EditorContainer";
-import { COLORS } from "../../shared/constants/ui";
 import { useSessionStore } from "../stores";
 import PanelContainer from "../components/containers/PanelContainer";
 
@@ -23,7 +22,7 @@ const WorkspacePage: React.FC = () => {
       height: "100vh", 
       overflow: "visible", 
       px: 4, 
-      color: COLORS.text 
+      color: "text.primary"
     }}>
       {/* EDITOR WRAPPER */}
       <Box sx={{ 

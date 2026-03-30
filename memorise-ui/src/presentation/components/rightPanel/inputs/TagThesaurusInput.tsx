@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Autocomplete, Box, Chip, CircularProgress, IconButton, TextField, Tooltip, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
+import { shadows } from "../../../../shared/theme";
+import { ENTITY_COLORS } from "../../../../shared/constants/notationEditor";
+import { sx as sxUtil } from "../../../../shared/styles";
 
 export type ThesaurusItem = {
   name: string;
@@ -26,8 +29,8 @@ const DEBOUNCE_MS = 220;
 
 const ThesaurusOption = React.memo(({ liProps, option }: { liProps: React.HTMLAttributes<HTMLLIElement>, option: ThesaurusItem }) => (
   <li {...liProps}>
-    <Box sx={{ display: "flex", flexDirection: "column", width: "100%", py: 0.5 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    <Box sx={{ ...sxUtil.flexColumn, width: "100%", py: 0.5 }}>
+      <Box sx={{ ...sxUtil.flexRow, gap: 1 }}>
         {typeof option.depth === "number" && option.depth > 0 && (
           <Box sx={{ display: "flex", gap: 0.3 }}>
             {Array.from({ length: option.depth }).map((_, i) => (
@@ -36,7 +39,7 @@ const ThesaurusOption = React.memo(({ liProps, option }: { liProps: React.HTMLAt
           </Box>
         )}
         <Typography sx={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{option.name}</Typography>
-        {option.isPreferred === false && <Chip size="small" label="alias" sx={{ height: 16, fontSize: 9, bgcolor: alpha("#F57C00", 0.1), color: "#F57C00", fontWeight: 700 }} />}
+        {option.isPreferred === false && <Chip size="small" label="alias" sx={{ height: 16, fontSize: 9, bgcolor: alpha(ENTITY_COLORS.ORG, 0.1), color: ENTITY_COLORS.ORG, fontWeight: 700 }} />}
       </Box>
       {option.path && option.path.length > 0 && <Typography sx={{ fontSize: 11, color: "#64748b", mt: 0.25 }}>{option.path.join(" › ")}</Typography>}
       {option.synonyms && option.synonyms.length > 0 && (
@@ -92,14 +95,14 @@ const TagThesaurusInput: React.FC<Props> = ({
   }, [value, onAdd]);
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+    <Box sx={{ ...sxUtil.flexRow, gap: 1, width: "100%" }}>
       <Autocomplete<ThesaurusItem, false, false, boolean>
         sx={{ flex: 1, minWidth: 0 }} blurOnSelect value={null} options={options} loading={loading}
         freeSolo={!effectiveRestrict} filterOptions={(opts) => opts} inputValue={value}
         disabled={isThesaurusLoading} onChange={handleChange} onInputChange={handleInputChange}
         getOptionLabel={(o) => (typeof o === "string" ? o : o.name)}
         slotProps={{
-          paper: { sx: { mt: 1, borderRadius: "12px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", border: "1px solid #e2e8f0" } }
+          paper: { sx: { mt: 1, borderRadius: "12px", boxShadow: shadows.md, border: "1px solid #e2e8f0" } }
         }}
         renderOption={(props, option) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -113,7 +116,7 @@ const TagThesaurusInput: React.FC<Props> = ({
             size="small"
             InputProps={{
               ...params.InputProps,
-              sx: { borderRadius: "30px", bgcolor: "#f8fafc", fontSize: 13, "& fieldset": { borderColor: "#e2e8f0" }, "&:hover fieldset": { borderColor: "#cbd5e1" }, "&.Mui-focused fieldset": { borderColor: "#1976D2" } },
+              sx: { borderRadius: "30px", bgcolor: "#f8fafc", fontSize: 13, "& fieldset": { borderColor: "divider" }, "&:hover fieldset": { borderColor: "#cbd5e1" }, "&.Mui-focused fieldset": { borderColor: "#1976D2" } },
               endAdornment: (
                 <>
                   {loading || isThesaurusLoading ? <CircularProgress size={16} sx={{ mr: 1, color: "#94a3b8" }} /> : null}

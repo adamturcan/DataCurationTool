@@ -14,7 +14,8 @@ import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import type { Workspace } from "../../types";
-import { COLORS, CUSTOM_TAG_COLOR } from "../../shared/constants/ui";
+import { CUSTOM_TAG_COLOR } from "../../shared/constants/ui";
+import { shadows } from "../../shared/theme";
 
 interface Props {
   username: string;
@@ -33,7 +34,7 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
         width: "100%",
         height: "100%",
         fontFamily: "'DM Sans', sans-serif",
-        color: COLORS.text,
+        color: "text.primary",
       }}
     >
       {/* Title in gold */}
@@ -42,10 +43,10 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
         fontWeight={900}
         mb={3}
         sx={{
-          color: COLORS.gold,
+          color: "gold.main",
           textTransform: "uppercase",
           letterSpacing: 1,
-          textShadow: "0 2px 4px rgba(0,0,0,0.35)",
+          textShadow: shadows.text,
         }}
       >
         Manage Account
@@ -55,10 +56,11 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
       <Card
         sx={{
           borderRadius: 3,
-          border: `1px solid ${COLORS.border}`,
-          background: "#FFFFFF",
+          border: 1,
+          borderColor: "divider",
+          bgcolor: "background.paper",
           backdropFilter: "blur(6px)",
-          boxShadow: "0 14px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.25)",
+          boxShadow: shadows.lg,
           maxWidth: 720,
         }}
       >
@@ -73,17 +75,17 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
             <Box>
               <Typography
                 variant="h6"
-                sx={{ color: COLORS.text, fontWeight: 800 }}
+                sx={{ color: "text.primary", fontWeight: 800 }}
               >
                 {username}
               </Typography>
-              <Typography variant="body2" sx={{ color: COLORS.textSub }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 Active User
               </Typography>
             </Box>
           </Box>
 
-          <Divider sx={{ my: 2, borderColor: COLORS.border }} />
+          <Divider sx={{ my: 2 }} />
 
           {/* Stats row */}
           <Stack
@@ -94,7 +96,8 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
             <Box
               sx={{
                 flex: 1,
-                border: `1px solid ${COLORS.border}`,
+                border: 1,
+                borderColor: "divider",
                 borderRadius: 2,
                 p: 2.5,
                 textAlign: "center",
@@ -105,18 +108,18 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 1.5,
-                "&:hover": { backgroundColor: COLORS.hover },
+                "&:hover": { backgroundColor: "action.hover" },
               }}
             >
-              <WorkspacesIcon sx={{ fontSize: 36, color: COLORS.brand }} />
+              <WorkspacesIcon sx={{ fontSize: 36, color: "primary.main" }} />
               <Typography
                 variant="h6"
                 fontWeight={800}
-                sx={{ color: COLORS.text }}
+                sx={{ color: "text.primary" }}
               >
                 {workspaces.length}
               </Typography>
-              <Typography variant="body2" sx={{ color: COLORS.textSub }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 Workspaces
               </Typography>
 
@@ -127,14 +130,12 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
                 sx={{
                   mt: 1,
                   px: 2.5,
-                  backgroundColor: COLORS.brand,
-                  "&:hover": { backgroundColor: COLORS.brandHover },
-                  color: "#FFFFFF",
+                  backgroundColor: "primary.main",
+                  "&:hover": { backgroundColor: "primary.dark" },
+                  color: "common.white",
                   borderRadius: "20px",
                   fontWeight: 800,
-                  textTransform: "none",
-                  boxShadow:
-                    "0 1px 0 rgba(12,24,38,0.08), 0 10px 30px rgba(12,24,38,0.25)",
+                  boxShadow: shadows.md,
                 }}
               >
                 Manage Workspaces
@@ -144,7 +145,8 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
             <Box
               sx={{
                 flex: 1,
-                border: `1px solid ${COLORS.border}`,
+                border: 1,
+                borderColor: "divider",
                 borderRadius: 2,
                 p: 2.5,
                 textAlign: "center",
@@ -155,11 +157,11 @@ const AccountPage: React.FC<Props> = ({ username, workspaces }) => {
               <Typography
                 variant="h6"
                 fontWeight={800}
-                sx={{ color: COLORS.text }}
+                sx={{ color: "text.primary" }}
               >
                 {lastLogin}
               </Typography>
-              <Typography variant="body2" sx={{ color: COLORS.textSub }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 Last Login
               </Typography>
             </Box>

@@ -12,6 +12,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import AddIcon from "@mui/icons-material/Add";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { shadows } from "../../../shared/theme";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -78,8 +79,7 @@ const BubbleSidebar: React.FC<Props> = ({
           color: fg,
           "&:hover": { bgcolor: accent, color: "#1F2C24" },
           border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow:
-            "0 1px 0 rgba(12,24,38,0.04), 0 4px 10px rgba(12,24,38,0.18)",
+          boxShadow: shadows.sm,
           display: "flex",
           alignItems: "center",
           gap: 0,

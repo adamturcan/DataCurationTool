@@ -3,9 +3,11 @@ import { Box, Paper, Typography, Collapse, Divider, Tooltip, Button, IconButton 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
+import { sx as sxUtil } from "../../../../shared/styles";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { alpha } from "@mui/material/styles";
+import { ENTITY_COLORS } from "../../../../shared/constants/notationEditor";
 
 import TagThesaurusInput, { type ThesaurusItem } from "../inputs/TagThesaurusInput";
 import type { ThesaurusIndexItem } from "../../../../types";
@@ -65,18 +67,18 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
   }, [data, hierarchyTree]);
 
   return (
-    <Paper elevation={0} sx={{ height: "100%", display: "flex", flexDirection: "column", bgcolor: "#ffffff", borderRadius: "12px" }}>
+    <Paper elevation={0} sx={{ height: "100%", ...sxUtil.flexColumn, bgcolor: "background.paper", borderRadius: "12px" }}>
 
 
       {thesaurus && (
-        <Box sx={{ px: 1.5, py: 1.5, borderBottom: "1px solid #e2e8f0", display: "flex", flexDirection: "column", gap: 1.25 }}>
+        <Box sx={{ px: 1.5, py: 1.5, borderBottom: "1px solid #e2e8f0", ...sxUtil.flexColumn, gap: 1.25 }}>
 
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <Typography sx={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#64748b", letterSpacing: 0.5 }}>
               {title || "Semantic Tags"}
             </Typography>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Box sx={{ ...sxUtil.flexRow, gap: 0.5 }}>
               <Tooltip title={restrictOnly ? "Only thesaurus tags are allowed" : "You can type custom tags"}>
                 <Button
                   disableElevation
@@ -92,9 +94,9 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
                     whiteSpace: "nowrap",
                     flexShrink: 0,
                     transition: "all 0.2s ease",
-                    bgcolor: restrictOnly ? alpha("#1976D2", 0.08) : "#f8fafc",
-                    color: restrictOnly ? "#1976D2" : "#64748b",
-                    border: `1px solid ${restrictOnly ? alpha("#1976D2", 0.2) : "#e2e8f0"}`,
+                    bgcolor: restrictOnly ? alpha(ENTITY_COLORS.DATE, 0.08) : "#f8fafc",
+                    color: restrictOnly ? ENTITY_COLORS.DATE : "#64748b",
+                    border: `1px solid ${restrictOnly ? alpha(ENTITY_COLORS.DATE, 0.2) : "#E2E8F0"}`,
                     "&:hover": {
                       bgcolor: restrictOnly ? alpha("#1976D2", 0.15) : "#f1f5f9",
                       borderColor: restrictOnly ? alpha("#1976D2", 0.3) : "#cbd5e1"
@@ -129,7 +131,7 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
       )}
 
       {/* Tag list */}
-      <Box sx={{ flex: 1, overflowY: "auto", overflowX: "hidden", p: 1.5, display: "flex", flexDirection: "column", gap: 1 }}>
+      <Box sx={{ flex: 1, overflowY: "auto", overflowX: "hidden", p: 1.5, ...sxUtil.flexColumn, gap: 1 }}>
         {data.length === 0 ? (
           <Typography sx={{ color: "#94a3b8", fontSize: 13, textAlign: "center", mt: 4 }}>No semantic tags yet.<br />Type above to add one.</Typography>
         ) : hierarchyTree ? (
@@ -140,14 +142,14 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
           groups.map(([groupKey, rows]) => (
             <Box key={groupKey} sx={{ border: "1px dashed #e2e8f0", borderRadius: "12px", background: "#f8fafc" }}>
               <Box onClick={() => toggle(groupKey)} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 1, px: 1.5, cursor: "pointer", "&:hover": { bgcolor: "#f1f5f9", borderRadius: "12px" } }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ ...sxUtil.flexRow, gap: 1 }}>
                   <Typography sx={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#64748b", letterSpacing: 0.5 }}>{groupKey}</Typography>
-                  <Typography sx={{ fontSize: 11, color: "#94a3b8", fontWeight: 700, bgcolor: "#e2e8f0", px: 0.8, py: 0.2, borderRadius: "10px" }}>{rows.length}</Typography>
+                  <Typography sx={{ fontSize: 11, color: "#94a3b8", fontWeight: 700, bgcolor: "divider", px: 0.8, py: 0.2, borderRadius: "10px" }}>{rows.length}</Typography>
                 </Box>
                 {collapsed[groupKey] ? <ExpandMoreIcon fontSize="small" sx={{ color: "#94a3b8" }} /> : <ExpandLessIcon fontSize="small" sx={{ color: "#94a3b8" }} />}
               </Box>
               <Collapse in={!collapsed[groupKey]} timeout="auto" unmountOnExit>
-                <Divider sx={{ borderColor: "#e2e8f0" }} />
+                <Divider sx={{ borderColor: "divider" }} />
                 <Box sx={{ p: 1 }}>
                   {rows.slice().sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" })).map(row => (
                     <TagItem key={`${groupKey}::${row.name}::${row.source}`} row={row} onDelete={onDelete} />
