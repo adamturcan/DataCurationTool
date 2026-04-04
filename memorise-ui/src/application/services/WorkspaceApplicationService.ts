@@ -1,16 +1,15 @@
-import type { WorkspaceRepository } from '../../core/interfaces/repositories/WorkspaceRepository';
-import { workspaceToDto } from '../../core/entities/mappers';
+import type { WorkspaceRepository } from '../../core/interfaces/WorkspaceRepository';
 import type { Workspace as WorkspaceDTO, TagItem, Translation, NerSpan, Segment } from '../../types';
-import { CreateWorkspaceUseCase } from '../../core/usecases/workspace/CreateWorkspaceUseCase';
-import { DeleteWorkspaceUseCase } from '../../core/usecases/workspace/DeleteWorkspaceUseCase';
+import { CreateWorkspaceUseCase } from '../../core/usecases/CreateWorkspaceUseCase';
+import { DeleteWorkspaceUseCase } from '../../core/usecases/DeleteWorkspaceUseCase';
 import {
   UpdateWorkspaceUseCase,
   type UpdateWorkspacePatch,
-} from '../../core/usecases/workspace/UpdateWorkspaceUseCase';
-import { LoadWorkspacesUseCase } from '../../core/usecases/workspace/LoadWorkspacesUseCase';
-import { SyncWorkspaceTranslationsUseCase } from '../../core/usecases/workspace/SyncWorkspaceTranslationsUseCase';
+} from '../../core/usecases/UpdateWorkspaceUseCase';
+import { LoadWorkspacesUseCase } from '../../core/usecases/LoadWorkspacesUseCase';
+import { SyncWorkspaceTranslationsUseCase } from '../../core/usecases/SyncWorkspaceTranslationsUseCase';
 import { Workspace } from '../../core/entities/Workspace';
-import { requireOwnerId, requireWorkspaceName } from '../../core/usecases/shared/validators';
+import { requireOwnerId, requireWorkspaceName } from '../../core/usecases/validators';
 
 interface WorkspaceApplicationServiceDeps {
   workspaceRepository: WorkspaceRepository;
@@ -48,7 +47,7 @@ export class WorkspaceApplicationService {
       const existingDto = segmentsMap.has(workspace.id) 
         ? { segments: segmentsMap.get(workspace.id) }
         : undefined;
-      return workspaceToDto(workspace, existingDto);
+      return workspace.toDto(existingDto);
     });
   }
 
@@ -59,7 +58,7 @@ export class WorkspaceApplicationService {
     // Preserve segments from stored data
     const rawPersistence = await this.getRawPersistenceForWorkspace(workspaceId);
     const existingDto = rawPersistence ? { segments: rawPersistence.segments } : undefined;
-    return workspaceToDto(workspace, existingDto);
+    return workspace.toDto(existingDto);
   }
 
   /**
@@ -106,7 +105,7 @@ export class WorkspaceApplicationService {
     updatedAt?: number;
   }): Promise<WorkspaceDTO> {
     const workspace = await this.createUseCase.execute(params);
-    return workspaceToDto(workspace);
+    return workspace.toDto();
   }
 
   async updateWorkspace(params: {
@@ -124,7 +123,7 @@ export class WorkspaceApplicationService {
     // Preserve segments from stored data to return the complete DTO
     const rawPersistence = await this.getRawPersistenceForWorkspace(workspace.id);
     const existingDto = rawPersistence ? { segments: rawPersistence.segments } : undefined;
-    return workspaceToDto(workspace, existingDto);
+    return workspace.toDto(existingDto);
   }
 
   async deleteWorkspace(workspaceId: string): Promise<void> {
@@ -197,7 +196,7 @@ export class WorkspaceApplicationService {
     // Preserve segments from stored data
     const rawPersistence = await this.getRawPersistenceForWorkspace(workspace.id);
     const existingDto = rawPersistence ? { segments: rawPersistence.segments } : undefined;
-    return workspaceToDto(workspace, existingDto);
+    return workspace.toDto(existingDto);
   }
 
   createWorkspaceDraft(ownerId: string, name: string): WorkspaceDTO {
@@ -211,7 +210,7 @@ export class WorkspaceApplicationService {
       isTemporary: true,
     });
 
-    return workspaceToDto(workspace);
+    return workspace.toDto();
   }
 
   seedForOwner(ownerId: string): WorkspaceDTO[] {
@@ -219,17 +218,15 @@ export class WorkspaceApplicationService {
     const now = Date.now();
 
     return ['Workspace A', 'Workspace B', 'Workspace C'].map((name) =>
-      workspaceToDto(
-        Workspace.create({
-          id: crypto.randomUUID(),
-          owner: validatedOwner,
-          name,
-          isTemporary: false,
-          text: '',
-          userSpans: [],
-          updatedAt: now,
-        })
-      )
+      Workspace.create({
+        id: crypto.randomUUID(),
+        owner: validatedOwner,
+        name,
+        isTemporary: false,
+        text: '',
+        userSpans: [],
+        updatedAt: now,
+      }).toDto()
     );
   }
 

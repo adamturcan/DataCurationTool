@@ -1,5 +1,5 @@
 import { BrowserApiService } from '../services/BrowserApiService';
-import type { ApiService } from '../../core/interfaces/services/ApiService';
+import type { ApiService } from '../../core/interfaces/ApiService';
 
 export interface ApiProviderOverrides {
   apiService?: ApiService;

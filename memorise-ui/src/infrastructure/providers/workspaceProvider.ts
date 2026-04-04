@@ -1,5 +1,5 @@
 import { LocalStorageWorkspaceRepository } from '../repositories/LocalStorageWorkspaceRepository';
-import type { WorkspaceRepository } from '../../core/interfaces/repositories/WorkspaceRepository';
+import type { WorkspaceRepository } from '../../core/interfaces/WorkspaceRepository';
 import { WorkspaceApplicationService } from '../../application/services/WorkspaceApplicationService';
 
 export interface WorkspaceProviderOverrides {

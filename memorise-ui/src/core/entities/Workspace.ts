@@ -1,5 +1,4 @@
-import type { NerSpan, TagItem, Translation as TranslationDTO } from '../../types';
-import { Tag, type TagProps } from './Tag';
+import type { NerSpan, TagItem, Workspace as WorkspaceDTO, Translation as TranslationDTO } from '../../types';
 
 /**
  * Lightweight metadata for workspace listing and quick operations.
@@ -12,21 +11,11 @@ export interface WorkspaceMetadata {
   updatedAt: number;
 }
 
-export interface WorkspaceTranslationInput {
-  language: string;
-  text?: string;
-  sourceLang?: string;
-  createdAt?: number;
-  updatedAt?: number;
-  userSpans?: NerSpan[];
-  apiSpans?: NerSpan[];
-  deletedApiKeys?: string[];
-  segmentTranslations?: {
-    [segmentId: string]: string;
-  };
-}
+/** Partial Translation DTO with only language required — defaults applied in create() */
+type WorkspaceTranslationInput = Partial<TranslationDTO> & { language: string };
 
-export interface WorkspaceTranslationProps {
+/** Validated, frozen internal state of a WorkspaceTranslation */
+interface WorkspaceTranslationProps {
   language: string;
   text: string;
   sourceLang: string;
@@ -40,6 +29,21 @@ export interface WorkspaceTranslationProps {
   };
 }
 
+/**
+ * Immutable translation page entity. Acts as a validated data carrier
+ * at the persistence boundary.
+ *
+ * Mapping convention: Hydrate via fromDto(), serialize via toDto().
+ *
+ * Note: This class has no domain logic of its own — translation mutations
+ * happen on plain DTOs in TranslationWorkflowService. It exists as a
+ * separate class (rather than a plain interface) to keep structural
+ * symmetry with Workspace and to enforce immutability + validation
+ * during hydration from storage. A future simplification could replace
+ * this with the Translation DTO type directly.
+ *
+ * @category Entities
+ */
 export class WorkspaceTranslation {
   private readonly props: WorkspaceTranslationProps;
 
@@ -74,6 +78,7 @@ export class WorkspaceTranslation {
     });
   }
 
+  /** Reconstructs entity from a persisted DTO (e.g. from localStorage) */
   static fromDto(dto: TranslationDTO): WorkspaceTranslation {
     return WorkspaceTranslation.create({
       language: dto.language,
@@ -124,38 +129,7 @@ export class WorkspaceTranslation {
     return this.props.segmentTranslations;
   }
 
-  withText(text: string): WorkspaceTranslation {
-    return this.clone({
-      text,
-      updatedAt: Date.now(),
-    });
-  }
-
-  withUserSpans(spans: NerSpan[]): WorkspaceTranslation {
-    return this.clone({
-      userSpans: [...spans],
-      updatedAt: Date.now(),
-    });
-  }
-
-  withApiSpans(spans: NerSpan[]): WorkspaceTranslation {
-    return this.clone({
-      apiSpans: [...spans],
-      updatedAt: Date.now(),
-    });
-  }
-
-  withDeletedApiKeys(keys: string[]): WorkspaceTranslation {
-    return this.clone({
-      deletedApiKeys: [...keys],
-      updatedAt: Date.now(),
-    });
-  }
-
-  withUpdatedAt(updatedAt: number): WorkspaceTranslation {
-    return this.clone({ updatedAt });
-  }
-
+  /** Serializes to plain Translation DTO for persistence */
   toDto(existingDto?: Partial<TranslationDTO>): TranslationDTO {
     return {
       language: this.language,
@@ -166,28 +140,12 @@ export class WorkspaceTranslation {
       userSpans: [...this.userSpans],
       apiSpans: [...this.apiSpans],
       deletedApiKeys: [...this.deletedApiKeys],
-      // Use segmentTranslations from entity, fallback to existingDto for backward compatibility
       segmentTranslations: this.segmentTranslations ?? existingDto?.segmentTranslations,
     };
   }
-
-  private clone(overrides: Partial<WorkspaceTranslationProps>): WorkspaceTranslation {
-    return new WorkspaceTranslation({
-      language: overrides.language ?? this.language,
-      text: overrides.text ?? this.text,
-      sourceLang: overrides.sourceLang ?? this.sourceLang,
-      createdAt: overrides.createdAt ?? this.createdAt,
-      updatedAt: overrides.updatedAt ?? this.updatedAt,
-      userSpans: overrides.userSpans ?? [...this.userSpans],
-      apiSpans: overrides.apiSpans ?? [...this.apiSpans],
-      deletedApiKeys: overrides.deletedApiKeys ?? [...this.deletedApiKeys],
-      segmentTranslations: overrides.segmentTranslations !== undefined 
-        ? overrides.segmentTranslations 
-        : this.segmentTranslations ? { ...this.segmentTranslations } : undefined,
-    });
-  }
 }
 
+/** Raw input for constructing a Workspace — accepts Tags, DTOs, or entity instances */
 export interface WorkspaceInput {
   id: string;
   name: string;
@@ -198,11 +156,12 @@ export interface WorkspaceInput {
   userSpans?: NerSpan[];
   apiSpans?: NerSpan[];
   deletedApiKeys?: string[];
-  tags?: Array<Tag | TagProps | TagItem>;
+  tags?: TagItem[];
   translations?: Array<WorkspaceTranslation | WorkspaceTranslationInput | TranslationDTO>;
 }
 
-export interface WorkspaceProps {
+/** Validated, frozen internal state of a Workspace */
+interface WorkspaceProps {
   id: string;
   name: string;
   owner: string;
@@ -212,10 +171,20 @@ export interface WorkspaceProps {
   userSpans: readonly NerSpan[];
   apiSpans: readonly NerSpan[];
   deletedApiKeys: readonly string[];
-  tags: readonly Tag[];
+  tags: readonly TagItem[];
   translations: readonly WorkspaceTranslation[];
 }
 
+/**
+ * Immutable workspace aggregate root. Holds source text, NER spans,
+ * tags (as plain TagItem DTOs), and translations (as WorkspaceTranslation
+ * entities). All mutations return a new instance via `with*()` builder
+ * methods. Internal arrays are frozen to prevent accidental mutation.
+ *
+ * Mapping convention: hydrate via fromDto(), serialize via toDto().
+ *
+ * @category Entities
+ */
 export class Workspace {
   private readonly props: WorkspaceProps;
 
@@ -230,6 +199,28 @@ export class Workspace {
     };
 
     Object.freeze(this.props);
+  }
+
+  /** Reconstructs entity from a persisted DTO (e.g. from localStorage) */
+  static fromDto(dto: WorkspaceDTO, options: { ownerFallback?: string } = {}): Workspace {
+    const owner = dto.owner ?? options.ownerFallback;
+    if (!owner) {
+      throw new Error('Workspace DTO must include owner');
+    }
+
+    return Workspace.create({
+      id: dto.id ?? crypto.randomUUID(),
+      name: dto.name ?? 'Untitled Workspace',
+      owner,
+      text: dto.text,
+      isTemporary: dto.isTemporary,
+      updatedAt: dto.updatedAt,
+      userSpans: dto.userSpans,
+      apiSpans: dto.apiSpans,
+      deletedApiKeys: dto.deletedApiKeys,
+      tags: dto.tags,
+      translations: dto.translations?.map((t) => WorkspaceTranslation.fromDto(t)),
+    });
   }
 
   static create(input: WorkspaceInput): Workspace {
@@ -247,20 +238,7 @@ export class Workspace {
       throw new Error('Workspace owner is required');
     }
 
-    const tags = (input.tags ?? []).map((tag) => {
-      if (tag instanceof Tag) return tag;
-      if ('source' in tag && 'name' in tag) {
-        return Tag.create({
-          name: tag.name,
-          source: tag.source,
-          label: 'label' in tag ? tag.label : undefined,
-          parentId: 'parentId' in tag ? tag.parentId : undefined,
-          segmentId: 'segmentId' in tag ? tag.segmentId : undefined,
-        });
-      }
-      const tagProps = tag as TagProps;
-      return Tag.create(tagProps);
-    });
+    const tags = input.tags ?? [];
 
     const translations = (input.translations ?? []).map((translation) => {
       if (translation instanceof WorkspaceTranslation) return translation;
@@ -327,7 +305,7 @@ export class Workspace {
     return this.props.deletedApiKeys;
   }
 
-  get tags(): readonly Tag[] {
+  get tags(): readonly TagItem[] {
     return this.props.tags;
   }
 
@@ -381,61 +359,9 @@ export class Workspace {
     });
   }
 
-  withTags(tags: Tag[]): Workspace {
+  withTags(tags: TagItem[]): Workspace {
     return this.clone({
       tags: dedupeTags(tags),
-      updatedAt: Date.now(),
-    });
-  }
-
-  addTag(tag: Tag): Workspace {
-    const tags = dedupeTags([...this.tags, tag]);
-    return this.clone({
-      tags,
-      updatedAt: Date.now(),
-    });
-  }
-
-  removeTag(predicate: (tag: Tag) => boolean): Workspace {
-    const tags = this.tags.filter((tag) => !predicate(tag));
-    return this.clone({
-      tags,
-      updatedAt: Date.now(),
-    });
-  }
-
-  getTranslation(language: string): WorkspaceTranslation | undefined {
-    return this.translations.find((translation) => translation.language === language);
-  }
-
-  upsertTranslation(translation: WorkspaceTranslation): Workspace {
-    const existingIndex = this.translations.findIndex(
-      (t) => t.language === translation.language
-    );
-
-    if (existingIndex === -1) {
-      return this.clone({
-        translations: [...this.translations, translation],
-        updatedAt: Date.now(),
-      });
-    }
-
-    const nextTranslations = [...this.translations];
-    nextTranslations[existingIndex] = translation;
-
-    return this.clone({
-      translations: nextTranslations,
-      updatedAt: Date.now(),
-    });
-  }
-
-  removeTranslation(language: string): Workspace {
-    const nextTranslations = this.translations.filter(
-      (translation) => translation.language !== language
-    );
-
-    return this.clone({
-      translations: nextTranslations,
       updatedAt: Date.now(),
     });
   }
@@ -447,46 +373,14 @@ export class Workspace {
     });
   }
 
-  updateTranslation(
-    language: string,
-    updater: (translation: WorkspaceTranslation) => WorkspaceTranslation
-  ): Workspace {
-    const existing = this.getTranslation(language);
-
-    if (!existing) {
-      throw new Error(`Translation ${language} not found in workspace ${this.id}`);
-    }
-
-    return this.upsertTranslation(updater(existing));
-  }
-
   withUpdatedAt(updatedAt?: number): Workspace {
     const nextUpdatedAt =
       typeof updatedAt === 'number' && Number.isFinite(updatedAt) ? updatedAt : Date.now();
     return this.clone({ updatedAt: nextUpdatedAt });
   }
 
-  markAsPermanent(): Workspace {
-    if (!this.isTemporary) {
-      return this;
-    }
-    return this.withTemporaryFlag(false);
-  }
-
-  /**
-   * Extracts lightweight metadata from the workspace.
-   * Use this when only basic workspace information is needed.
-   */
-  toMetadata(): WorkspaceMetadata {
-    return {
-      id: this.id,
-      name: this.name,
-      owner: this.owner,
-      updatedAt: this.updatedAt,
-    };
-  }
-
-  toJSON(): WorkspaceProps {
+  /** Serializes to plain Workspace DTO for persistence, preserving segments from existingDto */
+  toDto(existingDto?: Partial<WorkspaceDTO>): WorkspaceDTO {
     return {
       id: this.id,
       name: this.name,
@@ -498,7 +392,10 @@ export class Workspace {
       apiSpans: [...this.apiSpans],
       deletedApiKeys: [...this.deletedApiKeys],
       tags: [...this.tags],
-      translations: [...this.translations],
+      translations: this.translations.map((translation) =>
+        translation.toDto(existingDto?.translations?.find(t => t.language === translation.language))
+      ),
+      segments: existingDto?.segments,
     };
   }
 
@@ -519,8 +416,9 @@ export class Workspace {
   }
 }
 
-function dedupeTags(tags: readonly Tag[]): Tag[] {
-  const seen = new Map<string, Tag>();
+/** Deduplicates tags by composite key (name + label + parentId) */
+function dedupeTags(tags: readonly TagItem[]): TagItem[] {
+  const seen = new Map<string, TagItem>();
   tags.forEach((tag) => {
     const key = `${tag.name.toLowerCase()}:${tag.label ?? 'none'}:${tag.parentId ?? 'none'}`;
     if (!seen.has(key)) {
@@ -530,6 +428,7 @@ function dedupeTags(tags: readonly Tag[]): Tag[] {
   return Array.from(seen.values());
 }
 
+/** Deduplicates translations by language code, keeping the first occurrence */
 function dedupeTranslations(translations: readonly WorkspaceTranslation[]): WorkspaceTranslation[] {
   const seen = new Map<string, WorkspaceTranslation>();
   translations.forEach((translation) => {

@@ -4,8 +4,8 @@ import { useActionGuard } from "./useActionGuard";
 import type { ActionGuardActions } from "./useActionGuard";
 import { segmentWorkflowService } from "../../application/services/SegmentWorkflowService";
 import { translationWorkflowService } from "../../application/services/TranslationWorkflowService";
-import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
-import { SpanLogic } from "../../core/domain/entities/SpanLogic";
+import { SegmentLogic } from "../../core/entities/SegmentLogic";
+import { SpanLogic } from "../../core/entities/SpanLogic";
 import type { SplitAnchor } from "./useSpanInteractions";
 
 export function useSegmentSplitMerge() {

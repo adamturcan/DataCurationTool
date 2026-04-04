@@ -1,12 +1,15 @@
 import { readJSON, writeJSON, removeItem } from "../storage/localStorageHelpers";
-import type { WorkspaceRepository } from "../../core/interfaces/repositories/WorkspaceRepository";
+import type { WorkspaceRepository } from "../../core/interfaces/WorkspaceRepository";
 import { Workspace } from "../../core/entities/Workspace";
-import {
-  workspaceFromDto,
-  workspaceToPersistence,
-  type WorkspacePersistence,
-} from "../../core/entities/mappers";
 import type { Workspace as WorkspaceDTO, Translation, Segment } from "../../types";
+
+/** Workspace DTO with required fields guaranteed — the shape written to localStorage */
+type WorkspacePersistence = WorkspaceDTO & {
+  owner: string;
+  text: string;
+  isTemporary: boolean;
+  updatedAt: number;
+};
 import { errorHandlingService } from "../services/ErrorHandlingService";
 
 const STORAGE_KEY = "memorise.workspaces";
@@ -214,12 +217,12 @@ export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
   private normalize(workspace: Workspace): WorkspacePersistence {
     // Read existing workspace to preserve segments and segmentTranslations
     const existing = this.readAll().find((ws) => ws.id === workspace.id);
-    return this.sanitize(workspaceToPersistence(workspace, existing));
+    return this.sanitize(workspace.toDto(existing));
   }
 
    
   private toDomain(workspace: WorkspacePersistence): Workspace {
-    return workspaceFromDto(workspace);
+    return Workspace.fromDto(workspace);
   }
 
   async getRawPersistenceForOwner(ownerId: string): Promise<Array<{ id: string; segments?: Segment[] }>> {

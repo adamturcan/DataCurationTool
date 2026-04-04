@@ -1,10 +1,9 @@
-import type { NerSpan } from "../../../types";
-import { Annotation } from "../../entities/Annotation";
+import type { NerSpan } from "../../types";
 
 const keyOfSpan = (s: NerSpan) => `${s.start}:${s.end}:${s.entity}`;
 
 const spansOverlap = (a: NerSpan, b: NerSpan) =>
-  Annotation.fromSpan(a).overlapsWith(Annotation.fromSpan(b));
+  a.start < b.end && b.start < a.end;
 
 export type ConflictSource = "user" | "api";
 

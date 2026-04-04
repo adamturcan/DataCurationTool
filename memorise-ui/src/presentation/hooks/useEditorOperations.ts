@@ -9,8 +9,8 @@ import { segmentWorkflowService } from "../../application/services/SegmentWorkfl
 import { editorWorkflowService } from "../../application/services/EditorWorkflowService";
 import { taggingWorkflowService } from "../../application/services/TaggingWorkflowService";
 import { translationWorkflowService } from "../../application/services/TranslationWorkflowService";
-import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
-import { SpanLogic } from "../../core/domain/entities/SpanLogic";
+import { SegmentLogic } from "../../core/entities/SegmentLogic";
+import { SpanLogic } from "../../core/entities/SpanLogic";
 
 import type { AnnotationLayer, SpanCoordMap } from "../../types";
 import type { useLayerOperations } from "./useLayerOperations";

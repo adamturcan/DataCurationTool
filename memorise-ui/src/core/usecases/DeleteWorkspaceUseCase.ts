@@ -1,6 +1,6 @@
-import type { WorkspaceRepository } from '../../interfaces/repositories/WorkspaceRepository';
-import { errorHandlingService } from '../../../infrastructure/services/ErrorHandlingService';
-import { requireWorkspaceId } from '../shared/validators';
+import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
+import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
+import { requireWorkspaceId } from './validators';
 
 const OPERATION = 'DeleteWorkspaceUseCase';
 

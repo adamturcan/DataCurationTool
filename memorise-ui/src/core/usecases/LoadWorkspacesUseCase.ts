@@ -1,5 +1,5 @@
-import type { WorkspaceRepository } from '../../interfaces/repositories/WorkspaceRepository';
-import { requireOwnerId } from '../shared/validators';
+import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
+import { requireOwnerId } from './validators';
 
 const OPERATION = 'LoadWorkspacesUseCase';
 

@@ -1,7 +1,7 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
-import { resolveApiSpanConflicts, type ConflictPrompt } from "../../core/services/annotation/resolveApiSpanConflicts";
+import { resolveApiSpanConflicts, type ConflictPrompt } from "../../core/services/resolveApiSpanConflicts";
 import type { NerSpan, AnnotationLayer, Segment, WorkflowResult } from "../../types";
-import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
+import { SegmentLogic } from "../../core/entities/SegmentLogic";
 import { v4 as uuidv4 } from "uuid";
 
 export type AnnotationResult = WorkflowResult & {

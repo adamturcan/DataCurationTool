@@ -18,7 +18,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SyncIcon from '@mui/icons-material/Sync';
 
 import { CodeMirrorWrapper } from "./codemirror/CodeMirrorWrapper";
-import { SegmentLogic } from "../../../core/domain/entities/SegmentLogic";
+import { SegmentLogic } from "../../../core/entities/SegmentLogic";
 import type { NerSpan, SelectionBox, SpanCoordMap, Segment, Workspace, Translation } from "../../../types";
 import { getSpanId } from "./utils/editorUtils";
 import { ENTITY_COLORS } from "../../../shared/constants/notationEditor";

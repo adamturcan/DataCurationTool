@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { type ConflictPrompt } from "../../core/services/annotation/resolveApiSpanConflicts";
+import { type ConflictPrompt } from "../../core/services/resolveApiSpanConflicts";
 
 export function useConflictResolution() {
   const [conflictPrompt, setConflictPrompt] = useState<ConflictPrompt | null>(null);

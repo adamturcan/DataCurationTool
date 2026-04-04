@@ -1,5 +1,5 @@
-import { SpanLogic } from "../../core/domain/entities/SpanLogic";
-import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
+import { SpanLogic } from "../../core/entities/SpanLogic";
+import { SegmentLogic } from "../../core/entities/SegmentLogic";
 import type { NerSpan, AnnotationLayer, Segment, Workspace, SpanCoordMap, WorkflowResult } from "../../types";
 import { getWorkspaceApplicationService } from "../../infrastructure/providers/workspaceProvider";
 

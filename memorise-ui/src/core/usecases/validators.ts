@@ -1,5 +1,5 @@
-import { errorHandlingService } from '../../../infrastructure/services/ErrorHandlingService';
-import type { AppError } from '../../../infrastructure/services/ErrorHandlingService';
+import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
+import type { AppError } from '../../infrastructure/services/ErrorHandlingService';
 
 interface ValidationOptions {
   operation: string;

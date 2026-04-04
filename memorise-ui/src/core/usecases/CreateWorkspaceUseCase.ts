@@ -1,9 +1,8 @@
-import type { WorkspaceRepository } from '../../interfaces/repositories/WorkspaceRepository';
-import { Workspace, WorkspaceTranslation } from '../../entities/Workspace';
-import { Tag } from '../../entities/Tag';
-import type { TagItem, Translation, NerSpan } from '../../../types';
-import { errorHandlingService } from '../../../infrastructure/services/ErrorHandlingService';
-import { requireOwnerId, requireWorkspaceName } from '../shared/validators';
+import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
+import { Workspace, WorkspaceTranslation } from '../entities/Workspace';
+import type { TagItem, Translation, NerSpan } from '../../types';
+import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
+import { requireOwnerId, requireWorkspaceName } from './validators';
 
 const OPERATION = 'CreateWorkspaceUseCase';
 
@@ -44,15 +43,7 @@ export class CreateWorkspaceUseCase {
         userSpans: request.userSpans ?? [],
         apiSpans: request.apiSpans ?? [],
         deletedApiKeys: request.deletedApiKeys ?? [],
-        tags: request.tags?.map((tag) =>
-          Tag.create({
-            name: tag.name,
-            source: tag.source,
-            label: tag.label,
-            parentId: tag.parentId,
-            segmentId: tag.segmentId,
-          })
-        ),
+        tags: request.tags,
         translations: request.translations?.map((translation) =>
           WorkspaceTranslation.create(translation)
         ),

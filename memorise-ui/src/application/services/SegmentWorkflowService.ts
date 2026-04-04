@@ -1,5 +1,5 @@
-import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
-import { SpanLogic } from "../../core/domain/entities/SpanLogic";
+import { SegmentLogic } from "../../core/entities/SegmentLogic";
+import { SpanLogic } from "../../core/entities/SpanLogic";
 import { getApiService } from "../../infrastructure/providers/apiProvider";
 import type { SessionPatch, Translation, Segment, WorkflowResult } from "../../types";
 

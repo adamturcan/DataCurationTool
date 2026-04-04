@@ -1,7 +1,7 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
 import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
-import { SegmentLogic } from "../../core/domain/entities/SegmentLogic";
-import { SpanLogic } from "../../core/domain/entities/SpanLogic";
+import { SegmentLogic } from "../../core/entities/SegmentLogic";
+import { SpanLogic } from "../../core/entities/SpanLogic";
 import type { Translation, Segment, WorkflowResult } from "../../types";
 
 export type TranslationResult = WorkflowResult & {

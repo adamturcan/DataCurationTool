@@ -1,7 +1,7 @@
 import type { NerSpan, LanguageCode, TranslationRequest, TranslationResponse, Segment } from '../../types';
 import type {
   ApiService as ApiServiceContract,
-} from '../../core/interfaces/services/ApiService';
+} from '../../core/interfaces/ApiService';
 import { errorHandlingService } from './ErrorHandlingService';
 
 const NER_ENDPOINT = import.meta.env.VITE_NER_API_URL ?? "https://ner-api.dev.memorise.sdu.dk/recognize";
