@@ -37,10 +37,24 @@ describe('errorPresenter', () => {
     });
   });
 
-  it('derives messages from code suffixes', () => {
+  it('uses catalog entry for known required codes', () => {
     const error: AppError = {
       ...baseError,
       code: 'WORKSPACE_NAME_REQUIRED',
+      severity: 'warn',
+    };
+
+    expect(presentError(error)).toMatchObject({
+      message: 'Please provide a name for the workspace.',
+      tone: 'warning',
+      persistent: false,
+    });
+  });
+
+  it('derives messages from code suffixes for unknown codes', () => {
+    const error: AppError = {
+      ...baseError,
+      code: 'SOME_FIELD_REQUIRED',
       severity: 'warn',
     };
 

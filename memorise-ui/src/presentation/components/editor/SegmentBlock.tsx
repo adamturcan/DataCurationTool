@@ -293,7 +293,7 @@ export const SegmentBlock: React.FC<SegmentBlockProps> = ({
       <Box sx={{
         position: "relative",
         backgroundColor: isHeaderOpen ? "#f8fafc" : "transparent",
-        borderBottom: isHeaderOpen ? "1px solid #e2e8f0" : "none",
+        borderBottom: (t) => isHeaderOpen ? `1px solid ${t.palette.divider}` : "none",
         transition: "background-color 0.2s ease"
       }}>
         <Box sx={{ position: "absolute", top: isHeaderOpen ? "8px" : "4px", right: "8px", zIndex: 10, ...sxUtil.flexRow, gap: 0.5 }}>

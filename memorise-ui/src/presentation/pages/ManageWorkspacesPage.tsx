@@ -237,7 +237,7 @@ const ManageWorkspacesPage: React.FC = () => {
           sx={{
             maxHeight: "85vh",
             overflowY: "auto",
-            overflowX: "hidden",
+            overflowX: "auto",
             p: 2,
             "&::-webkit-scrollbar-thumb": {
               background: "#CBD5E1",

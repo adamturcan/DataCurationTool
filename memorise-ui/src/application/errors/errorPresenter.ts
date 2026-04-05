@@ -40,17 +40,35 @@ const ERROR_CATALOG: Record<string, Notice> = {
     tone: 'error',
     persistent: true,
   },
-  TAG_ALREADY_EXISTS: {
-    message: 'This tag already exists in the workspace.',
-    tone: 'info',
-  },
-  TAG_VALIDATION_FAILED: {
-    message: 'We could not validate that tag. Please review and try again.',
+  WORKSPACE_ID_REQUIRED: {
+    message: 'A workspace ID is required for this action.',
     tone: 'warning',
   },
-  ANNOTATION_VALIDATION_FAILED: {
-    message: 'The annotation looks invalid. Please adjust and try again.',
+  WORKSPACE_OWNER_REQUIRED: {
+    message: 'Please log in to access workspaces.',
     tone: 'warning',
+  },
+  WORKSPACE_NAME_REQUIRED: {
+    message: 'Please provide a name for the workspace.',
+    tone: 'warning',
+  },
+  API_ERROR: {
+    message: 'The service encountered an error. Please try again.',
+    tone: 'error',
+    persistent: true,
+  },
+  VALIDATION_ERROR: {
+    message: 'Please review the entered information.',
+    tone: 'warning',
+  },
+  WORKSPACE_TRANSLATION_LANGUAGE_REQUIRED: {
+    message: 'A translation language must be specified.',
+    tone: 'warning',
+  },
+  UNHANDLED_ERROR: {
+    message: 'An unexpected error occurred. Please try again.',
+    tone: 'error',
+    persistent: true,
   },
 };
 

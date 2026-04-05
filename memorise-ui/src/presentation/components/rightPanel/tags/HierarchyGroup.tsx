@@ -18,7 +18,7 @@ const HierarchyGroup: React.FC<HierarchyGroupProps> = React.memo(({ node, depth 
   const isCollapsed = !!collapsed[groupKey];
 
   return (
-    <Box sx={{ border: "1px dashed #e2e8f0", borderRadius: "12px", background: "#f8fafc", mb: 0.5, mx: 0.5, width: Math.max(200, 280 - depth * 20) }}>
+    <Box sx={{ border: (t) => `1px dashed ${t.palette.divider}`, borderRadius: "12px", background: "#f8fafc", mb: 0.5, mx: 0.5, width: Math.max(200, 280 - depth * 20) }}>
       <Box onClick={() => toggle(groupKey)} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 0.75, px: 1, cursor: "pointer", userSelect: "none", "&:hover": { bgcolor: "#f1f5f9", borderRadius: "12px" } }}>
         <Box sx={{ ...sxUtil.flexRow, gap: 1, flex: 1, minWidth: 0 }}>
           {depth > 0 && <Box sx={{ width: 3, height: 16, borderRadius: 1, bgcolor: '#cbd5e1', flexShrink: 0 }} />}

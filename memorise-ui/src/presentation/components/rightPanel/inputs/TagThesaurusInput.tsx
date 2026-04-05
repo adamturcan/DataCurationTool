@@ -103,7 +103,7 @@ const TagThesaurusInput: React.FC<Props> = ({
         disabled={isThesaurusLoading} onChange={handleChange} onInputChange={handleInputChange}
         getOptionLabel={(o) => (typeof o === "string" ? o : o.name)}
         slotProps={{
-          paper: { sx: { mt: 1, borderRadius: "12px", boxShadow: shadows.md, border: "1px solid #e2e8f0" } }
+          paper: { sx: { mt: 1, borderRadius: "12px", boxShadow: shadows.md, border: 1, borderColor: "divider" } }
         }}
         renderOption={(props, option) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars

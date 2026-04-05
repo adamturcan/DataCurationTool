@@ -56,7 +56,7 @@ const EditorContainer: React.FC = () => {
       </Box>
 
       <Box sx={{ flexGrow: 1, overflowY: "auto", width: "100%", px: { xs: 2, md: 4 }, py: 2 }}>
-        <Box sx={{ borderRadius: "8px", border: "1px solid #e2e8f0", boxShadow: shadows.sm, overflow: "hidden", backgroundColor: "transparent" }}>
+        <Box sx={{ borderRadius: "8px", border: 1, borderColor: "divider", boxShadow: shadows.sm, overflow: "hidden", backgroundColor: "transparent" }}>
           {!session?.segments || session.segments.length === 0 ? (
             <SegmentDragProvider onDraggingChange={splits.setDraggingFromIndex} draggingFromIndex={splits.draggingFromIndex}>
               <SegmentBlock

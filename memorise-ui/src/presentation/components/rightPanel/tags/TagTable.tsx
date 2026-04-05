@@ -72,7 +72,7 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
 
 
       {thesaurus && (
-        <Box sx={{ px: 1.5, py: 1.5, borderBottom: "1px solid #e2e8f0", ...sxUtil.flexColumn, gap: 1.25 }}>
+        <Box sx={{ px: 1.5, py: 1.5, borderBottom: 1, borderColor: "divider", ...sxUtil.flexColumn, gap: 1.25 }}>
 
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <Typography sx={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#64748b", letterSpacing: 0.5 }}>
@@ -97,7 +97,7 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
                     transition: "all 0.2s ease",
                     bgcolor: restrictOnly ? alpha(ENTITY_COLORS.DATE, 0.08) : "#f8fafc",
                     color: restrictOnly ? ENTITY_COLORS.DATE : "#64748b",
-                    border: `1px solid ${restrictOnly ? alpha(ENTITY_COLORS.DATE, 0.2) : "#E2E8F0"}`,
+                    border: (t) => `1px solid ${restrictOnly ? alpha(ENTITY_COLORS.DATE, 0.2) : t.palette.divider}`,
                     "&:hover": {
                       bgcolor: restrictOnly ? alpha("#1976D2", 0.15) : "#f1f5f9",
                       borderColor: restrictOnly ? alpha("#1976D2", 0.3) : "#cbd5e1"
@@ -141,7 +141,7 @@ const TagTable: React.FC<Props> = ({ data, onDelete, thesaurus, thesaurusIndex, 
           ))
         ) : (
           groups.map(([groupKey, rows]) => (
-            <Box key={groupKey} sx={{ border: "1px dashed #e2e8f0", borderRadius: "12px", background: "#f8fafc" }}>
+            <Box key={groupKey} sx={{ border: (t) => `1px dashed ${t.palette.divider}`, borderRadius: "12px", background: "#f8fafc" }}>
               <Box onClick={() => toggle(groupKey)} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 1, px: 1.5, cursor: "pointer", "&:hover": { bgcolor: "#f1f5f9", borderRadius: "12px" } }}>
                 <Box sx={{ ...sxUtil.flexRow, gap: 1 }}>
                   <Typography sx={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", color: "#64748b", letterSpacing: 0.5 }}>{groupKey}</Typography>
