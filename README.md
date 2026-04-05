@@ -2,7 +2,7 @@
 
 Bachelor's thesis project (NPRG045 Software Project) at Charles University, Faculty of Mathematics and Physics.
 
-A client-side text curation tool for NLP-assisted annotation of Holocaust testimonies, built as part of the [Memorise](https://memorise.eu/) digital humanities initiative.
+A client-side text curation tool for NLP-assisted annotation of Holocaust testimonies, built as part of the [Memorise]([https://memorise.eu/](https://memorise.sdu.dk/about-memorise/)) digital humanities initiative.
 
 ## Repository Structure
 
@@ -11,12 +11,10 @@ A client-side text curation tool for NLP-assisted annotation of Holocaust testim
 | `memorise-ui/` | Main application source code (React + TypeScript) |
 | `memorise-ui/src/` | Application source — see `memorise-ui/README.md` for architecture details |
 | `memorise-ui/Dockerfile` | Multi-stage Docker build (Node → nginx) |
-| `memorise-ui/docs/api/` | Generated TypeDoc API documentation |
 | `.github/workflows/` | CI/CD pipeline — type-check, lint, test, build, deploy to GitHub Pages |
 | `Specification_Draft.md` | Initial project specification |
 | `Styleguide Memorise_compressed.pdf` | Visual design reference from the Memorise project |
 | `memorise_api_demo.py` | Python demo script for the NLP API endpoints |
-| `fotkyUI/` | UI screenshots and mockups |
 
 ## Getting Started
 
