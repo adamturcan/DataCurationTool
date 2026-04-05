@@ -92,5 +92,20 @@ export const SpanLogic = {
       if (newStart !== s.start || newEnd !== s.end) return { ...s, start: newStart, end: newEnd };
       return s;
     });
+  },
+
+  /** Removes overlapping spans and shifts remaining spans for both user and API layers at once */
+  removeAndShiftBoth: (
+    userSpans: NerSpan[],
+    apiSpans: NerSpan[],
+    rangeStart: number,
+    rangeEnd: number,
+    delta: number
+  ): { nextUserSpans: NerSpan[]; nextApiSpans: NerSpan[] } => {
+    let nextUserSpans = SpanLogic.removeSpansInRange(userSpans, rangeStart, rangeEnd);
+    nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, rangeEnd, delta);
+    let nextApiSpans = SpanLogic.removeSpansInRange(apiSpans, rangeStart, rangeEnd);
+    nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, rangeEnd, delta);
+    return { nextUserSpans, nextApiSpans };
   }
 };

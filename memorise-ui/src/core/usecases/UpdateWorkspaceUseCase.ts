@@ -1,5 +1,5 @@
 import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
-import { Workspace, WorkspaceTranslation } from '../entities/Workspace';
+import { Workspace } from '../entities/Workspace';
 import type { TagItem, TranslationDTO, NerSpan, Segment } from '../../types';
 import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
 import { requireWorkspaceId, requireExistingWorkspace } from './validators';
@@ -65,11 +65,7 @@ export class UpdateWorkspaceUseCase {
         workspace = workspace.withTags(patch.tags);
       }
       if (patch.translations !== undefined) {
-        workspace = workspace.withTranslations(
-          patch.translations.map((translation) =>
-            WorkspaceTranslation.create(translation)
-          )
-        );
+        workspace = workspace.withTranslations(patch.translations);
       }
       if (patch.updatedAt !== undefined) {
         workspace = workspace.withUpdatedAt(patch.updatedAt);

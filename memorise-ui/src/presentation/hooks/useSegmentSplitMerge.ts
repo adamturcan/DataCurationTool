@@ -43,10 +43,9 @@ export function useSegmentSplitMerge() {
         delete newSegs[segmentId];
         const newFullText = segments.map(s => newSegs[s.id] || "").join("");
 
-        let nextUserSpans = SpanLogic.removeSpansInRange(currentLayer.userSpans || [], deletedStart, deletedEnd);
-        nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, deletedEnd, -deletedText.length);
-        let nextApiSpans = SpanLogic.removeSpansInRange(currentLayer.apiSpans || [], deletedStart, deletedEnd);
-        nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, deletedEnd, -deletedText.length);
+        const { nextUserSpans, nextApiSpans } = SpanLogic.removeAndShiftBoth(
+          currentLayer.userSpans || [], currentLayer.apiSpans || [], deletedStart, deletedEnd, -deletedText.length
+        );
 
         const translations = (fresh?.translations || []).map(t =>
           t.language === lang ? { ...t, segmentTranslations: newSegs, text: newFullText, userSpans: nextUserSpans, apiSpans: nextApiSpans } : t

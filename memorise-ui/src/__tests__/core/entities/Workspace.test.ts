@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Workspace, WorkspaceTranslation } from '@/core/entities/Workspace';
+import { Workspace } from '@/core/entities/Workspace';
+import type { TranslationDTO } from '@/types';
 
 const baseWorkspace = () =>
   Workspace.create({
@@ -61,8 +62,9 @@ describe('Workspace aggregate', () => {
   });
 
   it('sets translations via withTranslations while deduplicating languages', () => {
-    const cs = WorkspaceTranslation.create({ language: 'cs', text: 'Ahoj' });
-    const en = WorkspaceTranslation.create({ language: 'en', text: 'Hello' });
+    const now = Date.now();
+    const cs: TranslationDTO = { language: 'cs', text: 'Ahoj', sourceLang: 'auto', createdAt: now, updatedAt: now };
+    const en: TranslationDTO = { language: 'en', text: 'Hello', sourceLang: 'auto', createdAt: now, updatedAt: now };
 
     const workspace = baseWorkspace().withTranslations([cs, en, cs]);
     expect(workspace.translations).toHaveLength(2);

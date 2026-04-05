@@ -113,11 +113,11 @@ export class TranslationWorkflowService {
       let nextUserSpans = existing?.userSpans ?? [];
       let nextApiSpans = existing?.apiSpans ?? [];
       if (oldText.length > 0) {
-        nextUserSpans = SpanLogic.removeSpansInRange(nextUserSpans, oldStart, oldEnd);
-        nextApiSpans = SpanLogic.removeSpansInRange(nextApiSpans, oldStart, oldEnd);
+        ({ nextUserSpans, nextApiSpans } = SpanLogic.removeAndShiftBoth(nextUserSpans, nextApiSpans, oldStart, oldEnd, delta));
+      } else {
+        nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, oldEnd, delta);
+        nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, oldEnd, delta);
       }
-      nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, oldEnd, delta);
-      nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, oldEnd, delta);
 
       const updatedTranslation: TranslationDTO = {
         language: targetLang,
@@ -180,10 +180,9 @@ export class TranslationWorkflowService {
       const oldEnd = oldStart + oldText.length;
       const delta = res.translatedText.length - oldText.length;
 
-      let nextUserSpans = SpanLogic.removeSpansInRange(translation.userSpans || [], oldStart, oldEnd);
-      nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, oldEnd, delta);
-      let nextApiSpans = SpanLogic.removeSpansInRange(translation.apiSpans || [], oldStart, oldEnd);
-      nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, oldEnd, delta);
+      const { nextUserSpans, nextApiSpans } = SpanLogic.removeAndShiftBoth(
+        translation.userSpans || [], translation.apiSpans || [], oldStart, oldEnd, delta
+      );
 
       const translationsPatch = (session.translations || []).map(t =>
         t.language === targetLang
@@ -233,10 +232,9 @@ export class TranslationWorkflowService {
 
     const newFullText = session.segments.map(s => newSegs[s.id] || "").join("");
 
-    let nextUserSpans = SpanLogic.removeSpansInRange(currentLayer.userSpans || [], deletedStart, deletedEnd);
-    nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, deletedEnd, -deletedText.length);
-    let nextApiSpans = SpanLogic.removeSpansInRange(currentLayer.apiSpans || [], deletedStart, deletedEnd);
-    nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, deletedEnd, -deletedText.length);
+    const { nextUserSpans, nextApiSpans } = SpanLogic.removeAndShiftBoth(
+      currentLayer.userSpans || [], currentLayer.apiSpans || [], deletedStart, deletedEnd, -deletedText.length
+    );
 
     const translationsPatch = session.translations.map(t =>
       t.language === lang

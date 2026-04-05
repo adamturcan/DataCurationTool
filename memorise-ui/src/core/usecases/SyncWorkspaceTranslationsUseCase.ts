@@ -1,6 +1,5 @@
 import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
 import type { TranslationDTO } from '../../types';
-import { WorkspaceTranslation } from '../entities/Workspace';
 import { requireWorkspaceId, requireTranslationLanguage, requireExistingWorkspace } from './validators';
 
 const OPERATION = 'SyncWorkspaceTranslationsUseCase';
@@ -23,11 +22,10 @@ export class SyncWorkspaceTranslationsUseCase {
     const workspaceId = requireWorkspaceId(request.workspaceId, OPERATION);
     const workspace = await requireExistingWorkspace(this.workspaceRepository, workspaceId, OPERATION);
 
-    const translations = (request.translations ?? []).map((translation) => {
+    for (const translation of request.translations ?? []) {
       requireTranslationLanguage(translation.language, OPERATION);
-      // Use fromDto to properly handle Translation DTO with segmentTranslations
-      return WorkspaceTranslation.fromDto(translation);
-    });
+    }
+    const translations = request.translations ?? [];
 
     const updated = workspace.withTranslations(translations);
     await this.workspaceRepository.save(updated);

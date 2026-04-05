@@ -11,141 +11,7 @@ export interface WorkspaceMetadata {
   updatedAt: number;
 }
 
-/** Partial Translation DTO with only language required — defaults applied in create() */
-type WorkspaceTranslationInput = Partial<TranslationDTO> & { language: string };
-
-/** Validated, frozen internal state of a WorkspaceTranslation */
-interface WorkspaceTranslationProps {
-  language: string;
-  text: string;
-  sourceLang: string;
-  createdAt: number;
-  updatedAt: number;
-  userSpans: readonly NerSpan[];
-  apiSpans: readonly NerSpan[];
-  deletedApiKeys: readonly string[];
-  segmentTranslations?: {
-    [segmentId: string]: string;
-  };
-}
-
-/**
- * Immutable translation page entity. Acts as a validated data carrier
- * at the persistence boundary.
- *
- * Mapping convention: Hydrate via fromDto(), serialize via toDto().
- *
- * Note: This class has no domain logic of its own — translation mutations
- * happen on plain DTOs in TranslationWorkflowService. It exists as a
- * separate class (rather than a plain interface) to keep structural
- * symmetry with Workspace and to enforce immutability + validation
- * during hydration from storage. A future simplification could replace
- * this with the Translation DTO type directly.
- *
- * @category Entities
- */
-export class WorkspaceTranslation {
-  private readonly props: WorkspaceTranslationProps;
-
-  private constructor(props: WorkspaceTranslationProps) {
-    this.props = {
-      ...props,
-      userSpans: Object.freeze([...props.userSpans]),
-      apiSpans: Object.freeze([...props.apiSpans]),
-      deletedApiKeys: Object.freeze([...props.deletedApiKeys]),
-      segmentTranslations: props.segmentTranslations ? { ...props.segmentTranslations } : undefined,
-    };
-    Object.freeze(this.props);
-  }
-
-  static create(input: WorkspaceTranslationInput): WorkspaceTranslation {
-    const language = input.language?.trim();
-    if (!language) {
-      throw new Error('Translation language is required');
-    }
-
-    const now = Date.now();
-    return new WorkspaceTranslation({
-      language,
-      text: typeof input.text === 'string' ? input.text : '',
-      sourceLang: input.sourceLang?.trim() || 'auto',
-      createdAt: typeof input.createdAt === 'number' ? input.createdAt : now,
-      updatedAt: typeof input.updatedAt === 'number' ? input.updatedAt : now,
-      userSpans: Array.isArray(input.userSpans) ? [...input.userSpans] : [],
-      apiSpans: Array.isArray(input.apiSpans) ? [...input.apiSpans] : [],
-      deletedApiKeys: Array.isArray(input.deletedApiKeys) ? [...input.deletedApiKeys] : [],
-      segmentTranslations: input.segmentTranslations ? { ...input.segmentTranslations } : undefined,
-    });
-  }
-
-  /** Reconstructs entity from a persisted DTO (e.g. from localStorage) */
-  static fromDto(dto: TranslationDTO): WorkspaceTranslation {
-    return WorkspaceTranslation.create({
-      language: dto.language,
-      text: dto.text,
-      sourceLang: dto.sourceLang,
-      createdAt: dto.createdAt,
-      updatedAt: dto.updatedAt,
-      userSpans: dto.userSpans,
-      apiSpans: dto.apiSpans,
-      deletedApiKeys: dto.deletedApiKeys,
-      segmentTranslations: dto.segmentTranslations,
-    });
-  }
-
-  get language(): string {
-    return this.props.language;
-  }
-
-  get text(): string {
-    return this.props.text;
-  }
-
-  get sourceLang(): string {
-    return this.props.sourceLang;
-  }
-
-  get createdAt(): number {
-    return this.props.createdAt;
-  }
-
-  get updatedAt(): number {
-    return this.props.updatedAt;
-  }
-
-  get userSpans(): readonly NerSpan[] {
-    return this.props.userSpans;
-  }
-
-  get apiSpans(): readonly NerSpan[] {
-    return this.props.apiSpans;
-  }
-
-  get deletedApiKeys(): readonly string[] {
-    return this.props.deletedApiKeys;
-  }
-
-  get segmentTranslations(): { [segmentId: string]: string } | undefined {
-    return this.props.segmentTranslations;
-  }
-
-  /** Serializes to plain Translation DTO for persistence */
-  toDto(existingDto?: Partial<TranslationDTO>): TranslationDTO {
-    return {
-      language: this.language,
-      text: this.text,
-      sourceLang: this.sourceLang,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      userSpans: [...this.userSpans],
-      apiSpans: [...this.apiSpans],
-      deletedApiKeys: [...this.deletedApiKeys],
-      segmentTranslations: this.segmentTranslations ?? existingDto?.segmentTranslations,
-    };
-  }
-}
-
-/** Raw input for constructing a Workspace — accepts Tags, DTOs, or entity instances */
+/** Raw input for constructing a Workspace — accepts Tags and Translation DTOs */
 export interface WorkspaceInput {
   id: string;
   name: string;
@@ -157,7 +23,7 @@ export interface WorkspaceInput {
   apiSpans?: NerSpan[];
   deletedApiKeys?: string[];
   tags?: TagItem[];
-  translations?: Array<WorkspaceTranslation | WorkspaceTranslationInput | TranslationDTO>;
+  translations?: TranslationDTO[];
 }
 
 /** Validated, frozen internal state of a Workspace */
@@ -172,13 +38,13 @@ interface WorkspaceProps {
   apiSpans: readonly NerSpan[];
   deletedApiKeys: readonly string[];
   tags: readonly TagItem[];
-  translations: readonly WorkspaceTranslation[];
+  translations: readonly TranslationDTO[];
 }
 
 /**
  * Immutable workspace aggregate root. Holds source text, NER spans,
- * tags (as plain TagItem DTOs), and translations (as WorkspaceTranslation
- * entities). All mutations return a new instance via `with*()` builder
+ * tags (as plain TagItem DTOs), and translations (as plain TranslationDTO
+ * objects). All mutations return a new instance via `with*()` builder
  * methods. Internal arrays are frozen to prevent accidental mutation.
  *
  * Mapping convention: hydrate via fromDto(), serialize via toDto().
@@ -219,7 +85,7 @@ export class Workspace {
       apiSpans: dto.apiSpans,
       deletedApiKeys: dto.deletedApiKeys,
       tags: dto.tags,
-      translations: dto.translations?.map((t) => WorkspaceTranslation.fromDto(t)),
+      translations: dto.translations,
     });
   }
 
@@ -240,13 +106,7 @@ export class Workspace {
 
     const tags = input.tags ?? [];
 
-    const translations = (input.translations ?? []).map((translation) => {
-      if (translation instanceof WorkspaceTranslation) return translation;
-      if ('language' in translation) {
-        return WorkspaceTranslation.create(translation as WorkspaceTranslationInput);
-      }
-      return WorkspaceTranslation.fromDto(translation as TranslationDTO);
-    });
+    const translations = input.translations ?? [];
 
     const now = Date.now();
     const updatedAt =
@@ -309,7 +169,7 @@ export class Workspace {
     return this.props.tags;
   }
 
-  get translations(): readonly WorkspaceTranslation[] {
+  get translations(): readonly TranslationDTO[] {
     return this.props.translations;
   }
 
@@ -366,7 +226,7 @@ export class Workspace {
     });
   }
 
-  withTranslations(translations: WorkspaceTranslation[]): Workspace {
+  withTranslations(translations: TranslationDTO[]): Workspace {
     return this.clone({
       translations: dedupeTranslations(translations),
       updatedAt: Date.now(),
@@ -392,9 +252,7 @@ export class Workspace {
       apiSpans: [...this.apiSpans],
       deletedApiKeys: [...this.deletedApiKeys],
       tags: [...this.tags],
-      translations: this.translations.map((translation) =>
-        translation.toDto(existingDto?.translations?.find(t => t.language === translation.language))
-      ),
+      translations: [...this.translations],
       segments: existingDto?.segments,
     };
   }
@@ -429,8 +287,8 @@ function dedupeTags(tags: readonly TagItem[]): TagItem[] {
 }
 
 /** Deduplicates translations by language code, keeping the first occurrence */
-function dedupeTranslations(translations: readonly WorkspaceTranslation[]): WorkspaceTranslation[] {
-  const seen = new Map<string, WorkspaceTranslation>();
+function dedupeTranslations(translations: readonly TranslationDTO[]): TranslationDTO[] {
+  const seen = new Map<string, TranslationDTO>();
   translations.forEach((translation) => {
     if (!seen.has(translation.language)) {
       seen.set(translation.language, translation);

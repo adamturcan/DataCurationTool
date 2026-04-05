@@ -175,10 +175,9 @@ export class SegmentWorkflowService {
       delete nextDict[activeSegmentId];
       const nextFullText = updatedSegments.map(s => nextDict[s.id] || "").join("");
 
-      let nextUserSpans = SpanLogic.removeSpansInRange(translation.userSpans || [], deletedStart, deletedEnd);
-      nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, deletedEnd, -deletedText.length);
-      let nextApiSpans = SpanLogic.removeSpansInRange(translation.apiSpans || [], deletedStart, deletedEnd);
-      nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, deletedEnd, -deletedText.length);
+      const { nextUserSpans, nextApiSpans } = SpanLogic.removeAndShiftBoth(
+        translation.userSpans || [], translation.apiSpans || [], deletedStart, deletedEnd, -deletedText.length
+      );
 
       return { ...translation, segmentTranslations: nextDict, text: nextFullText, userSpans: nextUserSpans, apiSpans: nextApiSpans };
     });
@@ -301,10 +300,9 @@ export class SegmentWorkflowService {
           const newSourceText = nextDict[sourceSegmentId] || "";
           const lengthDelta = newSourceText.length - oldAffectedLen;
 
-          let nextUserSpans = SpanLogic.removeSpansInRange(translation.userSpans || [], oldSourceStart, oldAffectedEnd);
-          nextUserSpans = SpanLogic.shiftSpansFrom(nextUserSpans, oldAffectedEnd, lengthDelta);
-          let nextApiSpans = SpanLogic.removeSpansInRange(translation.apiSpans || [], oldSourceStart, oldAffectedEnd);
-          nextApiSpans = SpanLogic.shiftSpansFrom(nextApiSpans, oldAffectedEnd, lengthDelta);
+          const { nextUserSpans, nextApiSpans } = SpanLogic.removeAndShiftBoth(
+            translation.userSpans || [], translation.apiSpans || [], oldSourceStart, oldAffectedEnd, lengthDelta
+          );
 
           return { ...translation, segmentTranslations: nextDict, editedSegmentTranslations: nextEdited, text: nextFullText, userSpans: nextUserSpans, apiSpans: nextApiSpans };
         })

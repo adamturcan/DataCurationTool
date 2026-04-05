@@ -1,5 +1,5 @@
 import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
-import { Workspace, WorkspaceTranslation } from '../entities/Workspace';
+import { Workspace } from '../entities/Workspace';
 import type { TagItem, TranslationDTO, NerSpan } from '../../types';
 import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
 import { requireOwnerId, requireWorkspaceName } from './validators';
@@ -46,9 +46,7 @@ export class CreateWorkspaceUseCase {
         apiSpans: request.apiSpans ?? [],
         deletedApiKeys: request.deletedApiKeys ?? [],
         tags: request.tags,
-        translations: request.translations?.map((translation) =>
-          WorkspaceTranslation.create(translation)
-        ),
+        translations: request.translations,
       });
 
       await this.workspaceRepository.save(workspace);

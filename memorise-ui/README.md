@@ -1,54 +1,97 @@
-# React + TypeScript + Vite
+# Memorise UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A client-side text curation tool for NLP-assisted annotation of Holocaust testimonies. Built with React, TypeScript, and MUI .
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Text Editor** with CodeMirror 6 — per-segment editing with live span decorations
+- **Named Entity Recognition** — API-powered NER with conflict resolution for overlapping spans
+- **Segmentation** — split text into sentences via API, drag-to-reorder, merge/split segments
+- **Translation** — per-segment machine translation with independent NER per language
+- **Semantic Tagging** — API classification with thesaurus-backed hierarchical tag system
+- **Workspace Management** — create, rename, delete workspaces with localStorage persistence
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+App runs at `http://localhost:5173/NPRG045/`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment Variables
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Copy `.env.example` to `.env` to override defaults:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `VITE_BASE_PATH` | `/NPRG045/` | URL base path (set to `/` for Docker) |
+| `VITE_NER_API_URL` | `https://ner-api.dev.memorise.sdu.dk/recognize` | NER endpoint |
+| `VITE_SEGMENT_API_URL` | `https://textseg-api.dev.memorise.sdu.dk/segment` | Segmentation endpoint |
+| `VITE_CLASSIFY_API_URL` | `https://semtag-api.dev.memorise.sdu.dk/classify` | Classification endpoint |
+| `VITE_TRANSLATION_API_URL` | `https://mt-api.dev.memorise.sdu.dk` | Translation endpoint |
+
+## Docker
+
+```bash
+docker compose up
 ```
+
+App accessible at `http://localhost:3000`. API endpoints are configurable via environment variables in `docker-compose.yml`.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server with HMR |
+| `npm run build` | Type-check + production build |
+| `npm run test` | Run unit tests (Vitest) |
+| `npm run lint` | ESLint check |
+| `npm run docs` | Generate API docs (TypeDoc) → `docs/api/` |
+| `npm run build:thesaurus` | Build thesaurus search index from full JSON |
+
+## Architecture
+
+Four layers:
+
+```
+src/
+  core/           Domain logic (entities, interfaces, use cases, services)
+  infrastructure/ External integrations (localStorage, HTTP APIs, providers)
+  application/    Workflow services that orchestrate use cases
+  presentation/   React components, hooks, Zustand stores
+  types/          Shared TypeScript DTOs
+  shared/         Theme, constants, utilities
+```
+
+**Data flow:** UI event → hook → workflow service → entity/repository → Zustand store → re-render.
+
+**Key design decisions:**
+- `Workspace` entity uses immutable builder pattern (`with*()` methods) with `fromDto()`/`toDto()` for persistence
+- Tags and translations are plain DTOs — no entity wrappers
+- Zustand stores hold DTOs; workflow services operate on DTOs
+- Storage is abstracted via `WorkspaceRepository` interface for future backend migration
+- NER spans are split into user-created and API-generated collections for conflict resolution
+
+## Tech Stack
+
+- **React 19** + **TypeScript 5.8**
+- **Vite 6** — build tooling
+- **MUI 7** — component library + theming
+- **Zustand 5** — state management
+- **CodeMirror 6** — text editor
+- **Fuse.js** — fuzzy thesaurus search (Web Worker)
+- **Vitest** — unit testing
+- **TypeDoc** — API documentation generation
+- **Docker** (nginx:alpine) — containerized deployment
+- **GitHub Actions** — CI/CD with type-check, lint, test, build, deploy
+
+## Thesaurus
+
+The semantic tagging feature uses a hierarchical thesaurus index. To rebuild from the full JSON:
+
+1. Place `thesaurus-full.json` in `public/`
+2. Run `npm run build:thesaurus`
+3. Output: `public/thesaurus-index.json` (loaded by Web Worker at runtime)
+

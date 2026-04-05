@@ -98,17 +98,24 @@ export const useSessionStore = create<SessionStore>()(
       updateTranslations: (nextTranslations) => {
         const state = get();
         if (!state.session) return;
+        if (state.session.translations === nextTranslations) return;
         set({
           session: { ...state.session, translations: nextTranslations },
           isDirty: true,
         });
       },
 
+      // Skip update if every field in the patch is reference-equal to the current value
       updateSession: (updates) => {
         const state = get();
         if (!state.session) return;
+        const current = state.session;
+        const hasChange = Object.entries(updates).some(
+          ([key, value]) => current[key as keyof WorkspaceDTO] !== value
+        );
+        if (!hasChange) return;
         set({
-          session: { ...state.session, ...updates },
+          session: { ...current, ...updates },
           isDirty: true,
         });
       },
