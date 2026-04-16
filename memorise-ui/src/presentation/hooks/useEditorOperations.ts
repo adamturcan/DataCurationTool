@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react";
 import { useSessionStore, useNotificationStore, useWorkspaceStore } from "../stores";
-import { presentError } from "../../application/errors/errorPresenter";
-import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
+import { isAppError, toAppError } from "../../shared/errors";
+import { presentAppError } from "../../application/errors";
 import { useConflictResolution } from "./useConflictResolution";
 
-import { annotationWorkflowService } from "../../application/services/AnnotationWorkflowService";
-import { segmentWorkflowService } from "../../application/services/SegmentWorkflowService";
-import { editorWorkflowService } from "../../application/services/EditorWorkflowService";
-import { taggingWorkflowService } from "../../application/services/TaggingWorkflowService";
-import { translationWorkflowService } from "../../application/services/TranslationWorkflowService";
+import { annotationWorkflowService } from "../../application/workflows/AnnotationWorkflowService";
+import { segmentWorkflowService } from "../../application/workflows/SegmentWorkflowService";
+import { editorWorkflowService } from "../../application/workflows/EditorWorkflowService";
+import { taggingWorkflowService } from "../../application/workflows/TaggingWorkflowService";
+import { translationWorkflowService } from "../../application/workflows/TranslationWorkflowService";
 
 import type { AnnotationLayer, SpanCoordMap } from "../../types";
 import type { useLayerOperations } from "./useLayerOperations";
@@ -30,8 +30,8 @@ export function useEditorOperations(layers: LayerOps) {
   const { conflictPrompt, requestConflictResolution, resolveConflictPrompt } = useConflictResolution();
 
   const handleError = useCallback((err: unknown) => {
-    const appError = errorHandlingService.isAppError(err) ? err : errorHandlingService.handleApiError(err);
-    const notice = presentError(appError);
+    const appError = isAppError(err) ? err : toAppError(err);
+    const notice = presentAppError(appError);
     notify(notice);
   }, [notify]);
 
@@ -44,6 +44,7 @@ export function useEditorOperations(layers: LayerOps) {
       const result = await translationWorkflowService.addTranslation(targetLang, {
         segments: session.segments || [],
         translations: session.translations || [],
+        text: draftText,
       });
 
       if (result.ok) {
@@ -70,11 +71,16 @@ export function useEditorOperations(layers: LayerOps) {
       const result = await translationWorkflowService.addSegmentTranslation(lang, segmentId, {
         segments: session.segments || [],
         translations: session.translations || [],
+        text: draftText,
       });
 
       if (result.ok) {
         if (result.translationsPatch) updateTranslations(result.translationsPatch);
         if (result.newActiveTab) setActiveTab(result.newActiveTab);
+        if (segmentId === "root" && result.newActiveTab && result.translationsPatch) {
+          const newText = result.translationsPatch.find(t => t.language === result.newActiveTab)?.text || "";
+          if (newText) setDraftText(newText);
+        }
       }
       notify(result.notice);
     } catch (err) {
@@ -82,7 +88,7 @@ export function useEditorOperations(layers: LayerOps) {
     } finally {
       setIsProcessing(false);
     }
-  }, [session, updateTranslations, setActiveTab, notify, handleError]);
+  }, [session, draftText, setDraftText, updateTranslations, setActiveTab, notify, handleError]);
 
   const handleDeleteSegmentTranslation = useCallback((lang: string, segmentId: string) => {
     if (!session) return;

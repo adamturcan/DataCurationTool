@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, Divider, Box, TextField, InputAdornment, IconButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { ENTITY_COLORS, CATEGORY_LIST } from "../../../../shared/constants/notationEditor.ts";
-import type { CategoryMenuProps } from "../../../../types/NotationEditor.ts";
+import { ENTITY_COLORS, CATEGORY_LIST } from "../../../../shared/constants/notationEditor";
+import type { CategoryMenuProps } from "../../../../types/NotationEditor";
 
 // Add new props for text editing
 interface ExtendedMenuProps extends CategoryMenuProps {

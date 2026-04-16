@@ -6,55 +6,28 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/__tests__/**",
-    "**/test/**",
-    "node_modules/**",
-    "dist/**",
-    "coverage/**"
+    "**/test/**"
   ],
   "excludePrivate": true,
-  "excludeProtected": false,
-  "excludeInternal": false,
   "readme": "README.md",
   "name": "Memorise UI API Documentation",
   "includeVersion": true,
   "gitRevision": "main",
-  "plugin": [],
-  "theme": "default",
   "navigation": {
     "includeGroups": true,
     "includeCategories": true
   },
-  "groupOrder": [
-    "Hooks",
-    "Components",
-    "Services",
-    "Types",
-    "Utils"
-  ],
   "categoryOrder": [
-    "Hooks",
-    "Components", 
+    "Entities",
+    "Use Cases",
     "Services",
-    "Types",
-    "Utils"
+    "Interfaces",
+    "Application",
+    "Infrastructure",
+    "Stores",
+    "Shared",
+    "Types"
   ],
   "sort": ["source-order"],
-  "kindSortOrder": [
-    "Project",
-    "Module",
-    "Namespace",
-    "Enum",
-    "Class",
-    "Interface",
-    "TypeAlias",
-    "Constructor",
-    "Property",
-    "Method",
-    "Function",
-    "Accessor",
-    "Variable"
-  ],
-  "categorizeByGroup": true,
   "logLevel": "Warn"
 }
-

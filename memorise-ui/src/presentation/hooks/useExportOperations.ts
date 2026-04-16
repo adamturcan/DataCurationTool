@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useNotificationStore } from "../stores";
-import { exportWorkflowService } from "../../application/services/ExportWorkflowService";
+import { exportWorkflowService } from "../../application/workflows/ExportWorkflowService";
 
 /** Triggers workspace export (JSON or PDF) with download, loading state, and notifications */
 export function useExportOperations() {

@@ -5,9 +5,7 @@ dist-ssr
 .github
 .vscode
 .idea
-coverage
 docs
-thesis_files
 *.log
 *.local
 .DS_Store

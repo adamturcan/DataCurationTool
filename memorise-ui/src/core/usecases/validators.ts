@@ -10,8 +10,7 @@
  *
  * @category Use Cases
  */
-import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
-import type { AppError } from '../../infrastructure/services/ErrorHandlingService';
+import { createAppError, type AppError } from '../../shared/errors';
 import type { Workspace } from '../entities/Workspace';
 import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
 
@@ -35,7 +34,7 @@ export function requireNonEmptyString(
     }
   }
 
-  throw errorHandlingService.createAppError({
+  throw createAppError({
     message: `${options.field} is required.`,
     code: options.code,
     severity: options.severity ?? 'warn',
@@ -96,7 +95,7 @@ export async function requireExistingWorkspace(
 ): Promise<Workspace> {
   const workspace = await repository.findById(workspaceId);
   if (!workspace) {
-    throw errorHandlingService.createAppError({
+    throw createAppError({
       message: `Workspace ${workspaceId} was not found.`,
       code: 'WORKSPACE_NOT_FOUND',
       severity: 'warn',

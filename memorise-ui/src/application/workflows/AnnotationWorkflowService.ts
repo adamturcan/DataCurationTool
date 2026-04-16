@@ -1,5 +1,5 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
-import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
+import { catchApiError } from "../errors";
 import { resolveApiSpanConflicts, type ConflictPrompt } from "../../core/services/resolveApiSpanConflicts";
 import type { NerSpan, AnnotationLayer, Segment, WorkflowResult } from "../../types";
 import { SegmentLogic } from "../../core/entities/SegmentLogic";
@@ -76,9 +76,7 @@ export class AnnotationWorkflowService {
       return { ok: true, notice: { message: conflictsHandled > 0 ? "NER completed with conflicts." : "NER completed.", tone: "success" }, layerPatch: { userSpans: nextUserSpans, apiSpans: nextApiSpans }, deletedApiKeys: [] };
 
     } catch (error) {
-      const appError = errorHandlingService.handleApiError(error, { operation: "run NER analysis" });
-      errorHandlingService.logError(appError);
-      return { ok: false, notice: { message: appError.message, tone: "error" } };
+      return catchApiError(error, "run NER analysis");
     }
   }
 

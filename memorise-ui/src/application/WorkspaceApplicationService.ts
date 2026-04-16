@@ -1,15 +1,15 @@
-import type { WorkspaceRepository } from '../../core/interfaces/WorkspaceRepository';
-import type { WorkspaceDTO, TagItem, TranslationDTO, NerSpan, Segment } from '../../types';
-import { CreateWorkspaceUseCase } from '../../core/usecases/CreateWorkspaceUseCase';
-import { DeleteWorkspaceUseCase } from '../../core/usecases/DeleteWorkspaceUseCase';
+import type { WorkspaceRepository } from '../core/interfaces/WorkspaceRepository';
+import type { WorkspaceDTO, TagItem, TranslationDTO, NerSpan, Segment } from '../types';
+import { CreateWorkspaceUseCase } from '../core/usecases/CreateWorkspaceUseCase';
+import { DeleteWorkspaceUseCase } from '../core/usecases/DeleteWorkspaceUseCase';
 import {
   UpdateWorkspaceUseCase,
   type UpdateWorkspacePatch,
-} from '../../core/usecases/UpdateWorkspaceUseCase';
-import { LoadWorkspacesUseCase } from '../../core/usecases/LoadWorkspacesUseCase';
-import { SyncWorkspaceTranslationsUseCase } from '../../core/usecases/SyncWorkspaceTranslationsUseCase';
-import { Workspace } from '../../core/entities/Workspace';
-import { requireOwnerId, requireWorkspaceName } from '../../core/usecases/validators';
+} from '../core/usecases/UpdateWorkspaceUseCase';
+import { LoadWorkspacesUseCase } from '../core/usecases/LoadWorkspacesUseCase';
+import { SyncWorkspaceTranslationsUseCase } from '../core/usecases/SyncWorkspaceTranslationsUseCase';
+import { Workspace } from '../core/entities/Workspace';
+import { requireOwnerId, requireWorkspaceName } from '../core/usecases/validators';
 
 interface WorkspaceApplicationServiceDeps {
   workspaceRepository: WorkspaceRepository;

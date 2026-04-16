@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useSessionStore, useNotificationStore } from "../stores";
-import { annotationWorkflowService } from "../../application/services/AnnotationWorkflowService";
+import { annotationWorkflowService } from "../../application/workflows/AnnotationWorkflowService";
 import { getSpanId, safeSubstring, normalizeReplacement, SPLIT_DELIMITERS } from "../components/editor/utils/editorUtils";
 import type { NerSpan, SelectionBox } from "../../types";
 import type { useLayerOperations } from "./useLayerOperations";

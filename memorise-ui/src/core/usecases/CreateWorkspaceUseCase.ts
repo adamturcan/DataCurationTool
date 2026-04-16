@@ -1,7 +1,7 @@
 import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
 import { Workspace } from '../entities/Workspace';
 import type { TagItem, TranslationDTO, NerSpan } from '../../types';
-import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
+import { createAppError } from '../../shared/errors';
 import { requireOwnerId, requireWorkspaceName } from './validators';
 
 const OPERATION = 'CreateWorkspaceUseCase';
@@ -52,7 +52,7 @@ export class CreateWorkspaceUseCase {
       await this.workspaceRepository.save(workspace);
       return workspace;
     } catch (error) {
-      throw errorHandlingService.createAppError({
+      throw createAppError({
         message:
           error instanceof Error ? error.message : 'Failed to create workspace.',
         code: 'WORKSPACE_CREATE_FAILED',

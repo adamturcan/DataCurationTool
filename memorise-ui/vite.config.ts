@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
-import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
 
 // hoist-non-react-statics bundles react-is@16 inline which crashes on React 19.
@@ -24,18 +23,6 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "VITE_");
   return {
     base: env.VITE_BASE_PATH || "/DataCurationTool/",
-    plugins: [
-      hoistShimPlugin(),
-      react(),
-      visualizer({
-        filename: "./dist/stats.html",
-        open: false,
-        gzipSize: true,
-        brotliSize: true,
-      }),
-    ],
-    build: {
-      chunkSizeWarningLimit: 750,
-    },
+    plugins: [hoistShimPlugin(), react()],
   };
 });

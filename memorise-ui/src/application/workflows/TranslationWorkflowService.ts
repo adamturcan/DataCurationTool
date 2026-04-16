@@ -1,5 +1,5 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
-import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
+import { catchApiError } from "../errors";
 import { SegmentLogic } from "../../core/entities/SegmentLogic";
 import { SpanLogic } from "../../core/entities/SpanLogic";
 import type { TranslationDTO, Segment, WorkflowResult } from "../../types";
@@ -19,15 +19,56 @@ type TranslationResult = WorkflowResult & {
  */
 export class TranslationWorkflowService {
   private apiService = getApiService();
-  private errorService = errorHandlingService;
+
+  private async translateWholeDocument(
+    targetLang: string,
+    fullText: string,
+    existing: TranslationDTO | undefined,
+    allTranslations: TranslationDTO[]
+  ): Promise<TranslationResult> {
+    const res = await this.apiService.translate({ text: fullText, targetLang });
+    const now = Date.now();
+    const newTranslation: TranslationDTO = {
+      language: targetLang,
+      text: res.translatedText,
+      sourceLang: res.sourceLang ?? existing?.sourceLang ?? "auto",
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now,
+      segmentTranslations: {},
+      editedSegmentTranslations: existing?.editedSegmentTranslations,
+      userSpans: existing?.userSpans ?? [],
+      apiSpans: existing?.apiSpans ?? [],
+      deletedApiKeys: existing?.deletedApiKeys ?? [],
+    };
+    const translationsPatch = existing
+      ? allTranslations.map(t => t.language === targetLang ? newTranslation : t)
+      : [...allTranslations, newTranslation];
+    return {
+      ok: true,
+      notice: { message: `Translated document to ${targetLang}.`, tone: "success" },
+      translationsPatch,
+      newActiveTab: targetLang,
+      editorKey: `${targetLang}:${now}`,
+    };
+  }
 
   async addTranslation(
     targetLang: string,
-    session: { segments: Segment[]; translations: TranslationDTO[] }
+    session: { segments: Segment[]; translations: TranslationDTO[]; text?: string }
   ): Promise<TranslationResult> {
     if (!session.segments || session.segments.length === 0) {
-      return { ok: false, notice: { message: "Document must be segmented before translating.", tone: "error" } };
+      const fullText = session.text || "";
+      if (!fullText.trim()) {
+        return { ok: false, notice: { message: "Document has no text to translate.", tone: "error" } };
+      }
+      try {
+        const existing = session.translations?.find(t => t.language === targetLang);
+        return await this.translateWholeDocument(targetLang, fullText, existing, session.translations || []);
+      } catch (error) {
+        return catchApiError(error, "add translation", "Failed to translate document.");
+      }
     }
+
     try {
       const existing = session.translations?.find(t => t.language === targetLang);
       const editedFlags = existing?.editedSegmentTranslations || {};
@@ -81,17 +122,28 @@ export class TranslationWorkflowService {
         editorKey: `${targetLang}:${now}`,
       };
     } catch (error) {
-      const appError = this.errorService.handleApiError(error, { operation: "add translation" });
-      this.errorService.logError(appError);
-      return { ok: false, notice: { message: "Failed to translate document.", tone: "error" } };
+      return catchApiError(error, "add translation", "Failed to translate document.");
     }
   }
 
   async addSegmentTranslation(
     targetLang: string,
     segmentId: string,
-    session: { segments: Segment[]; translations: TranslationDTO[] }
+    session: { segments: Segment[]; translations: TranslationDTO[]; text?: string }
   ): Promise<TranslationResult> {
+    if (segmentId === "root") {
+      const fullText = session.text || "";
+      if (!fullText.trim()) {
+        return { ok: false, notice: { message: "Document has no text to translate.", tone: "error" } };
+      }
+      try {
+        const existing = session.translations?.find(t => t.language === targetLang);
+        return await this.translateWholeDocument(targetLang, fullText, existing, session.translations || []);
+      } catch (error) {
+        return catchApiError(error, "add translation", "Failed to translate document.");
+      }
+    }
+
     const seg = session.segments?.find(s => s.id === segmentId);
     if (!seg?.text?.trim()) {
       return { ok: false, notice: { message: "Segment is empty.", tone: "error" } };
@@ -143,9 +195,7 @@ export class TranslationWorkflowService {
         newActiveTab: targetLang,
       };
     } catch (error) {
-      const appError = this.errorService.handleApiError(error, { operation: "add segment translation" });
-      this.errorService.logError(appError);
-      return { ok: false, notice: { message: "Failed to translate segment.", tone: "error" } };
+      return catchApiError(error, "add segment translation", "Failed to translate segment.");
     }
   }
 
@@ -205,9 +255,7 @@ export class TranslationWorkflowService {
         translationsPatch,
       };
     } catch (error) {
-      const appError = this.errorService.handleApiError(error, { operation: "update segment translation" });
-      this.errorService.logError(appError);
-      return { ok: false, notice: { message: "Failed to update segment translation.", tone: "error" } };
+      return catchApiError(error, "update segment translation", "Failed to update segment translation.");
     }
   }
 

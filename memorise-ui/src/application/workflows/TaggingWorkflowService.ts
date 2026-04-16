@@ -1,5 +1,6 @@
 import { getApiService } from "../../infrastructure/providers/apiProvider";
-import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
+import { logAppError } from "../../shared/errors";
+import { catchApiError } from "../errors";
 import { loadThesaurusIndex } from "../../shared/utils/thesaurusLoader";
 import type { ThesaurusIndexItem, TagItem, Segment, TranslationDTO, WorkflowResult } from "../../types";
 
@@ -61,7 +62,7 @@ export class TaggingWorkflowService {
 
       let thesaurusIndex: ThesaurusIndexItem[] = [];
       try { thesaurusIndex = await loadThesaurusIndex(); }
-      catch (e) { errorHandlingService.logError(e, { operation: "load thesaurus index" }); }
+      catch (e) { logAppError(e, { operation: "load thesaurus index" }); }
 
       const allTags = tags ?? [];
       const contextUserTags = allTags.filter((t) => t.source === "user" && t.segmentId === targetSegmentId);
@@ -98,9 +99,7 @@ export class TaggingWorkflowService {
       return { ok: true, notice: { message: "Classification completed.", tone: "success" }, tags: [...filteredTags, ...newTags] };
 
     } catch (error) {
-      const appError = errorHandlingService.handleApiError(error, { operation: "classify text" });
-      errorHandlingService.logError(appError);
-      return { ok: false, notice: { message: appError.message, tone: "error" } };
+      return catchApiError(error, "classify text");
     }
   }
 
@@ -133,9 +132,7 @@ export class TaggingWorkflowService {
 
       return { ok: true, notice: { message: "Tag added successfully.", tone: "success" }, tags: [newTag, ...allTags] };
     } catch (error) {
-      const appError = errorHandlingService.handleApiError(error, { operation: "add custom tag" });
-      errorHandlingService.logError(appError);
-      return { ok: false, notice: { message: appError.message, tone: "error" } };
+      return catchApiError(error, "add custom tag");
     }
   }
 

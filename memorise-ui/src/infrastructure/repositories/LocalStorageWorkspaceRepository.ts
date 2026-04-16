@@ -10,7 +10,7 @@ type WorkspacePersistence = WorkspaceDTO & {
   isTemporary: boolean;
   updatedAt: number;
 };
-import { errorHandlingService } from "../services/ErrorHandlingService";
+import { withRepositoryError } from "../../shared/errors";
 
 const STORAGE_KEY = "memorise.workspaces";
 const LEGACY_BASE_KEY = "memorise.workspaces.v1";
@@ -28,7 +28,7 @@ const REPOSITORY_NAME = "LocalStorageWorkspaceRepository";
  */
 export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
   async findById(id: string): Promise<Workspace | null> {
-    return errorHandlingService.withRepositoryError(
+    return withRepositoryError(
       {
         operation: "load workspace",
         repository: REPOSITORY_NAME,
@@ -43,7 +43,7 @@ export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
   }
 
   async findByOwner(ownerId: string): Promise<Workspace[]> {
-    return errorHandlingService.withRepositoryError(
+    return withRepositoryError(
       {
         operation: "load workspaces",
         repository: REPOSITORY_NAME,
@@ -65,7 +65,7 @@ export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
   }
 
   async save(workspace: Workspace): Promise<void> {
-    return errorHandlingService.withRepositoryError(
+    return withRepositoryError(
       {
         operation: "save workspace",
         repository: REPOSITORY_NAME,
@@ -88,7 +88,7 @@ export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
   }
 
   async delete(id: string): Promise<void> {
-    return errorHandlingService.withRepositoryError(
+    return withRepositoryError(
       {
         operation: "delete workspace",
         repository: REPOSITORY_NAME,
@@ -209,7 +209,7 @@ export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
   }
 
   async getRawPersistenceForOwner(ownerId: string): Promise<Array<{ id: string; segments?: Segment[] }>> {
-    return errorHandlingService.withRepositoryError(
+    return withRepositoryError(
       {
         operation: "get raw persistence",
         repository: REPOSITORY_NAME,
@@ -238,7 +238,7 @@ export class LocalStorageWorkspaceRepository implements WorkspaceRepository {
    * This is needed because segments are metadata not in the domain entity
    */
   async updateSegments(workspaceId: string, segments: Segment[] | undefined): Promise<void> {
-    return errorHandlingService.withRepositoryError(
+    return withRepositoryError(
       {
         operation: "update segments",
         repository: REPOSITORY_NAME,

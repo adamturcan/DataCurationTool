@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useSessionStore } from "../stores";
-import type { AnnotationResult } from "../../application/services/AnnotationWorkflowService";
+import type { AnnotationResult } from "../../application/workflows/AnnotationWorkflowService";
 import type { AnnotationLayer } from "../../types";
 
 /** Resolves, patches, and tracks edit state for original and translation annotation layers */

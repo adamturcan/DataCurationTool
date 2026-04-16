@@ -1,7 +1,7 @@
 import type { WorkspaceRepository } from '../interfaces/WorkspaceRepository';
 import { Workspace } from '../entities/Workspace';
 import type { TagItem, TranslationDTO, NerSpan, Segment } from '../../types';
-import { errorHandlingService } from '../../infrastructure/services/ErrorHandlingService';
+import { createAppError } from '../../shared/errors';
 import { requireWorkspaceId, requireExistingWorkspace } from './validators';
 
 const OPERATION = 'UpdateWorkspaceUseCase';
@@ -71,7 +71,7 @@ export class UpdateWorkspaceUseCase {
         workspace = workspace.withUpdatedAt(patch.updatedAt);
       }
     } catch (error) {
-      throw errorHandlingService.createAppError({
+      throw createAppError({
         message:
           error instanceof Error ? error.message : 'Failed to update workspace.',
         code: 'WORKSPACE_UPDATE_FAILED',

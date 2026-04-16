@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 
-import type { NerSpan } from '@/types/NotationEditor';
+import type { NerSpan } from '../types/NotationEditor';
 import {
   resolveApiSpanConflicts,
   type ConflictPrompt,
-} from '@/core/services/resolveApiSpanConflicts';
+} from '../core/services/resolveApiSpanConflicts';
 
 const buildSpan = (start: number, end: number, entity: string): NerSpan => ({
   start,

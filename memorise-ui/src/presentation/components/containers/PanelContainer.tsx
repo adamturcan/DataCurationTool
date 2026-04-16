@@ -4,7 +4,7 @@ import RightPanel, { type TagRow } from "../rightPanel/RightPanel";
 import type { ThesaurusItem } from "../rightPanel/inputs/TagThesaurusInput";
 import { useSessionStore, useNotificationStore } from "../../stores";
 import { useThesaurusDisplay, useThesaurusWorker } from "../../hooks";
-import { taggingWorkflowService } from "../../../application/services/TaggingWorkflowService";
+import { taggingWorkflowService } from "../../../application/workflows/TaggingWorkflowService";
 
 /** Connects the right tag panel to session state, thesaurus, and tagging workflow */
 const PanelContainer: React.FC = () => {

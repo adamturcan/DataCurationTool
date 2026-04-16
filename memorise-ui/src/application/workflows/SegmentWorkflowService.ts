@@ -1,7 +1,8 @@
 import { SegmentLogic } from "../../core/entities/SegmentLogic";
 import { SpanLogic } from "../../core/entities/SpanLogic";
 import { getApiService } from "../../infrastructure/providers/apiProvider";
-import { errorHandlingService } from "../../infrastructure/services/ErrorHandlingService";
+import { logAppError } from "../../shared/errors";
+import { catchApiError } from "../errors";
 import type { SessionPatch, TranslationDTO, Segment, WorkflowResult } from "../../types";
 
 type SegmentationResult = WorkflowResult & {
@@ -73,12 +74,7 @@ export class SegmentWorkflowService {
       };
 
     } catch (error) {
-      const appError = errorHandlingService.handleApiError(error, { operation: "segment text" });
-      errorHandlingService.logError(appError);
-      return {
-        ok: false,
-        notice: { message: appError.message, tone: "error" }
-      };
+      return catchApiError(error, "segment text");
     }
   }
 
@@ -278,7 +274,7 @@ export class SegmentWorkflowService {
               nextDict[sourceSegmentId] = res.translatedText;
               nextEdited[sourceSegmentId] = anyEdited;
             } catch (error) {
-              errorHandlingService.logError(error, { operation: "re-translate shifted segment" });
+              logAppError(error, { operation: "re-translate shifted segment" });
               delete nextDict[sourceSegmentId];
               delete nextEdited[sourceSegmentId];
             }

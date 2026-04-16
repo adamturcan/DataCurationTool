@@ -63,7 +63,7 @@ const EditorContainer: React.FC = () => {
                 segment={{ id: "root", start: 0, end: draftText.length, text: draftText, order: 0 }}
                 index={0}
                 session={session}
-                display={{ isActive: activeSegmentId === "root", isDragging: false, dropDisabled: false }}
+                display={{ isActive: true, isDragging: false, dropDisabled: false }}
                 handlers={{
                   onActivate: () => setActiveSegmentId("root"),
                   onJoinUp: splits.handleJoinUp,
@@ -109,6 +109,7 @@ const EditorContainer: React.FC = () => {
                   languageOptions: languageOptions,
                   isLanguageListLoading: isLanguageListLoading,
                 };
+                
 
                 return (
                   <SegmentBlock
@@ -116,7 +117,7 @@ const EditorContainer: React.FC = () => {
                     segment={segment}
                     index={idx}
                     session={session}
-                    display={{ isActive: activeSegmentId === segment.id, isDragging, dropDisabled }}
+                    display={{ isActive: activeSegmentId === segment.id , isDragging, dropDisabled }}
                     handlers={handlers}
                     translationHandlers={translationHandlers}
                     dragHandlers={{ prevSegmentId: idx > 0 ? session.segments?.[idx - 1].id : undefined }}
